@@ -124,15 +124,6 @@ The rpm-build package contains the scripts and executable programs
 that are used to build packages using the RPM Package Manager.
 #
 
-%package apidocs
-Summary: API documentation for RPM libraries
-Group: Documentation
-BuildArch: noarch
-
-%description apidocs
-This package contains API documentation for developing applications
-that will manipulate RPM packages and databases.
-
 %prep
 %setup -q  -n rpm-%{version}
 #%patch1 -p1
@@ -348,8 +339,3 @@ exit 0
 %{_mandir}/man8/rpmgraph.8*
 %{_bindir}/rpmgraph
 %{_libdir}/pkgconfig/rpm.pc
-
-%files apidocs
-%defattr(-,root,root)
-%doc src/doc/librpm/html/*
-

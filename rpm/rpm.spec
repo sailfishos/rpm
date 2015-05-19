@@ -269,8 +269,6 @@ exit 0
 %doc %{_mandir}/man8/rpmkeys.8.gz
 %doc %{_mandir}/man8/rpmsign.8.gz
 %doc %{_mandir}/man8/rpmspec.8.gz
-%{_libdir}/rpm-plugins/exec.so
-%{_libdir}/rpm-plugins/sepolicy.so
 
 # XXX this places translated manuals to wrong package wrt eg rpmbuild
 %lang(fr) %{_mandir}/fr/man[18]/*.[18]*

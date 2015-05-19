@@ -210,7 +210,7 @@ install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/libsymlink.a
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 
-install -m 755 scripts/debuginfo.prov $RPM_BUILD_ROOT/usr/lib/rpm
+#install -m 755 scripts/debuginfo.prov $RPM_BUILD_ROOT/usr/lib/rpm
 
 
 for dbi in \
@@ -343,7 +343,7 @@ exit 0
 #%{_libdir}/rpm/rpmdiff*
 %{_libdir}/rpm/desktop-file.prov
 %{_libdir}/rpm/fontconfig.prov
-%{_libdir}/rpm/debuginfo.prov
+#%{_libdir}/rpm/debuginfo.prov
 %{_libdir}/rpm/macros.perl
 %{_libdir}/rpm/macros.python
 %{_libdir}/rpm/macros.php

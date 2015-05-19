@@ -231,11 +231,6 @@ chmod 0644 $RPM_BUILD_ROOT/%{_libdir}/rpm/perldeps.pl
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with check}
-%check
-make check
-%endif
-
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 

@@ -244,7 +244,7 @@ if [ -x "$dbstat" ]; then
 fi
 exit 0
 
-%files -f %{name}.lang
+%files -f src/%{name}.lang
 %defattr(-,root,root,-)
 %doc GROUPS COPYING CREDITS 
 

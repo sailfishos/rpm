@@ -351,5 +351,5 @@ exit 0
 
 %files apidocs
 %defattr(-,root,root)
-%doc doc/librpm/html/*
+%doc src/doc/librpm/html/*
 

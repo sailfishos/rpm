@@ -1,0 +1,9 @@
+include Makefile
+
+snapshot: ChangeLog
+	@$(MAKE) dist VERSION=$(VERSION)-git`git log --pretty=oneline|wc -l`
+
+release: ChangeLog dist
+
+ChangeLog: .git
+	@git log --no-merges > ChangeLog

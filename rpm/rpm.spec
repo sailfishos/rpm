@@ -313,7 +313,6 @@ exit 0
 %{_libdir}/rpm/find-lang.sh
 %{_libdir}/rpm/find-provides
 %{_libdir}/rpm/find-requires
-%{_libdir}/rpm/javadeps
 %{_libdir}/rpm/mono-find-provides
 %{_libdir}/rpm/mono-find-requires
 %{_libdir}/rpm/ocaml-find-provides.sh

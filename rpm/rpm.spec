@@ -3,40 +3,16 @@
 
 Summary: The RPM package management system
 Name: rpm
-Version: 4.9.1.2
+Version: 4.12.0
 Release: 26
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
-Patch1:	0001-rpm-4.5.90-pkgconfig-path.patch
-Patch2:	0002-rpm-4.8.0-tilde.patch
-Patch3:	0003-rpm-macros.patch
-Patch4:	0004-rpm-4.9.0-meego-arm.patch
-Patch5:	0005-debuginfo.diff.patch
-Patch6:	0006-rpm-shorten-changelog.patch
-Patch7:	0007-rpm-4.7.1-mips64el.patch
-Patch8:	0008-rpm-4.9.1.2-skipprep.patch
-Patch9:	0009-Correct-arm-install.patch
-Patch10:	0010-rpm-disable-multilib.patch
-Patch11:	0011-Possibility-to-do-cross-platform-rpmrcs-with-ease.patch
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
 Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch
 Patch14:	0014-OpenSUSE-finddebuginfo-absolute-links.patch
-Patch15:	0015-OpenSUSE-autodeps.patch
-Patch16:	0016-OpenSUSE-buildidprov.patch
 Patch17:	0017-OpenSUSE-debugsubpkg.patch
 Patch18:	0018-OpenSUSE-fileattrs.patch
 Patch19:	0019-OpenSUSE-elfdeps.patch
-Patch20:	0020-Add-noclean-and-nocheck-options-to-rpmbuild.patch
-Patch21:	0021-Add-do-phase-args-and-noprep-arg-for-control-over-bu.patch
-Patch22:	0022-Do-not-require-uid-gid-of-files-to-have-a-valid-user.patch
-Patch23:	0023-Support-build-in-place-to-run-build-and-install-from.patch
-Patch24:	0024-add-new-dbi-flag-really_nodbsync.patch
-Patch25:	0025-macros-Support-noecho-macro-to-quieten-build-scriptl.patch
-Patch26:	0026-fix-rpmbuild-build-in-place-to-work-with-target-opti.patch
-Patch27:	0027-Implement-macro-to-skip-install-processing-step.patch
-Patch28:	0028-Replace-mno-thumb-compiler-option-with-marm.patch
-Patch29:	0029-Add-aarch64-support.patch
-Patch30:        0030-rpm-4.8.0-CVE-2013-6435.patch
 Patch31:	0031-add-python3-macro.patch
 Patch32:	0032-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Group: System/Base
@@ -74,6 +50,7 @@ BuildRequires: bzip2-devel >= 0.9.0c-2
 BuildRequires: lua-devel >= 5.1
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
+BuildRequires: libarchive-devel
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -126,47 +103,14 @@ The rpm-build package contains the scripts and executable programs
 that are used to build packages using the RPM Package Manager.
 #
 
-%package apidocs
-Summary: API documentation for RPM libraries
-Group: Documentation
-BuildArch: noarch
-
-%description apidocs
-This package contains API documentation for developing applications
-that will manipulate RPM packages and databases.
-
 %prep
 %setup -q  -n rpm-%{version}
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
-%patch29 -p1
-%patch30 -p1
+#%patch12 -p1
+#%patch13 -p1
+#%patch14 -p1
+#%patch17 -p1
+#%patch18 -p1
+#%patch19 -p1
 %patch31 -p1
 %patch32 -p1
 
@@ -175,16 +119,15 @@ CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
 
-# Using configure macro has some unwanted side-effects on rpm platform
-# setup, use the old-fashioned way for now only defining minimal paths.
-autoreconf -vfi
+cd src
 
-./configure \
+./autogen.sh \
     --prefix=%{_usr} \
     --sysconfdir=%{_sysconfdir} \
     --localstatedir=%{_var} \
     --sharedstatedir=%{_var}/lib \
     --libdir=%{_libdir} \
+    --with-vendor=meego \
     --with-external-db \
 %if %{with python}
     --enable-python \
@@ -197,6 +140,7 @@ make %{?jobs:-j%jobs}
 %install
 rm -rf $RPM_BUILD_ROOT
 
+cd src
 %make_install
 
 
@@ -215,7 +159,6 @@ install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/libsymlink.a
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 
-install -m 755 scripts/debuginfo.prov $RPM_BUILD_ROOT/usr/lib/rpm
 
 
 for dbi in \
@@ -233,16 +176,8 @@ done
 # avoid dragging in tonne of perl libs for an unused script
 chmod 0644 $RPM_BUILD_ROOT/%{_libdir}/rpm/perldeps.pl
 
-# compress our ChangeLog, it's fairly big...
-bzip2 -9 ChangeLog
-
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%if %{with check}
-%check
-make check
-%endif
 
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
@@ -257,9 +192,9 @@ if [ -x "$dbstat" ]; then
 fi
 exit 0
 
-%files -f %{name}.lang
+%files -f src/%{name}.lang
 %defattr(-,root,root,-)
-%doc GROUPS COPYING CREDITS 
+%doc src/GROUPS src/COPYING src/CREDITS
 
 %dir %{_sysconfdir}/rpm
 
@@ -275,6 +210,8 @@ exit 0
 %{_bindir}/rpmsign
 %{_bindir}/rpmquery
 %{_bindir}/rpmverify
+%{_bindir}/rpm2archive
+%{_libdir}/rpm-plugins/syslog.so
 
 %doc %{_mandir}/man8/rpm.8*
 %doc %{_mandir}/man8/rpm2cpio.8*
@@ -282,8 +219,6 @@ exit 0
 %doc %{_mandir}/man8/rpmkeys.8.gz
 %doc %{_mandir}/man8/rpmsign.8.gz
 %doc %{_mandir}/man8/rpmspec.8.gz
-%{_libdir}/rpm-plugins/exec.so
-%{_libdir}/rpm-plugins/sepolicy.so
 
 # XXX this places translated manuals to wrong package wrt eg rpmbuild
 %lang(fr) %{_mandir}/fr/man[18]/*.[18]*
@@ -328,7 +263,6 @@ exit 0
 %{_libdir}/rpm/find-lang.sh
 %{_libdir}/rpm/find-provides
 %{_libdir}/rpm/find-requires
-%{_libdir}/rpm/javadeps
 %{_libdir}/rpm/mono-find-provides
 %{_libdir}/rpm/mono-find-requires
 %{_libdir}/rpm/ocaml-find-provides.sh
@@ -345,13 +279,13 @@ exit 0
 %{_libdir}/rpm/config.guess
 %{_libdir}/rpm/config.sub
 %{_libdir}/rpm/mkinstalldirs
-#%{_libdir}/rpm/rpmdiff*
 %{_libdir}/rpm/desktop-file.prov
 %{_libdir}/rpm/fontconfig.prov
-%{_libdir}/rpm/debuginfo.prov
 %{_libdir}/rpm/macros.perl
 %{_libdir}/rpm/macros.python
 %{_libdir}/rpm/macros.php
+%{_libdir}/rpm/appdata.prov
+%{_libdir}/rpm/rpm.supp
 
 %{_mandir}/man8/rpmbuild.8*
 %{_mandir}/man8/rpmdeps.8*
@@ -364,8 +298,3 @@ exit 0
 %{_mandir}/man8/rpmgraph.8*
 %{_bindir}/rpmgraph
 %{_libdir}/pkgconfig/rpm.pc
-
-%files apidocs
-%defattr(-,root,root)
-%doc doc/librpm/html/*
-

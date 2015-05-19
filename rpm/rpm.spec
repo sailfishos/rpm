@@ -228,9 +228,6 @@ done
 # avoid dragging in tonne of perl libs for an unused script
 chmod 0644 $RPM_BUILD_ROOT/%{_libdir}/rpm/perldeps.pl
 
-# compress our ChangeLog, it's fairly big...
-bzip2 -9 ChangeLog
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 

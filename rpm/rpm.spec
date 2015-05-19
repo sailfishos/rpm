@@ -246,7 +246,7 @@ exit 0
 
 %files -f src/%{name}.lang
 %defattr(-,root,root,-)
-%doc GROUPS COPYING CREDITS 
+%doc src/GROUPS src/COPYING src/CREDITS
 
 %dir %{_sysconfdir}/rpm
 

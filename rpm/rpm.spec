@@ -253,6 +253,8 @@ exit 0
 %{_bindir}/rpmsign
 %{_bindir}/rpmquery
 %{_bindir}/rpmverify
+%{_bindir}/rpm2archive
+%{_libdir}/rpm-plugins/syslog.so
 
 %doc %{_mandir}/man8/rpm.8*
 %doc %{_mandir}/man8/rpm2cpio.8*
@@ -327,6 +329,8 @@ exit 0
 %{_libdir}/rpm/macros.perl
 %{_libdir}/rpm/macros.python
 %{_libdir}/rpm/macros.php
+%{_libdir}/rpm/appdata.prov
+%{_libdir}/rpm/rpm.supp
 
 %{_mandir}/man8/rpmbuild.8*
 %{_mandir}/man8/rpmdeps.8*

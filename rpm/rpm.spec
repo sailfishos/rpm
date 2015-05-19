@@ -172,11 +172,7 @@ export CPPFLAGS CFLAGS LDFLAGS
 
 cd src
 
-# Using configure macro has some unwanted side-effects on rpm platform
-# setup, use the old-fashioned way for now only defining minimal paths.
-autoreconf
-
-./configure \
+./autogen.sh \
     --prefix=%{_usr} \
     --sysconfdir=%{_sysconfdir} \
     --localstatedir=%{_var} \

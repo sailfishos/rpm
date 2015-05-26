@@ -7,7 +7,6 @@ Version: 4.9.1.2
 Release: 21
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
-Patch1:	0001-rpm-4.5.90-pkgconfig-path.patch
 Patch2:	0002-rpm-4.8.0-tilde.patch
 Patch3:	0003-rpm-macros.patch
 Patch4:	0004-rpm-4.9.0-meego-arm.patch
@@ -126,7 +125,6 @@ that are used to build packages using the RPM Package Manager.
 
 %prep
 %setup -q  -n rpm-%{version}
-#%patch1 -p1
 #%patch2 -p1
 #%patch3 -p1
 #%patch4 -p1

@@ -7,9 +7,7 @@ Version: 4.9.1.2
 Release: 21
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
-Patch3:	0003-rpm-macros.patch
 Patch5:	0005-debuginfo.diff.patch
-Patch7:	0007-rpm-4.7.1-mips64el.patch
 Patch8:	0008-rpm-4.9.1.2-skipprep.patch
 Patch10:	0010-rpm-disable-multilib.patch
 Patch11:	0011-Possibility-to-do-cross-platform-rpmrcs-with-ease.patch
@@ -118,9 +116,7 @@ that are used to build packages using the RPM Package Manager.
 
 %prep
 %setup -q  -n rpm-%{version}
-#%patch3 -p1
 #%patch5 -p1
-#%patch7 -p1
 #%patch8 -p1
 #%patch10 -p1
 #%patch11 -p1
@@ -154,6 +150,7 @@ cd src
     --localstatedir=%{_var} \
     --sharedstatedir=%{_var}/lib \
     --libdir=%{_libdir} \
+    --with-vendor=meego \
     --with-external-db \
 %if %{with python}
     --enable-python \

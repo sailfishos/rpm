@@ -12,7 +12,6 @@ Patch5:	0005-debuginfo.diff.patch
 Patch6:	0006-rpm-shorten-changelog.patch
 Patch7:	0007-rpm-4.7.1-mips64el.patch
 Patch8:	0008-rpm-4.9.1.2-skipprep.patch
-Patch9:	0009-Correct-arm-install.patch
 Patch10:	0010-rpm-disable-multilib.patch
 Patch11:	0011-Possibility-to-do-cross-platform-rpmrcs-with-ease.patch
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
@@ -127,7 +126,6 @@ that are used to build packages using the RPM Package Manager.
 #%patch6 -p1
 #%patch7 -p1
 #%patch8 -p1
-#%patch9 -p1
 #%patch10 -p1
 #%patch11 -p1
 #%patch12 -p1

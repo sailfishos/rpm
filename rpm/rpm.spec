@@ -22,7 +22,6 @@ Patch19:	0019-OpenSUSE-elfdeps.patch
 Patch21:	0021-Add-do-phase-args-and-noprep-arg-for-control-over-bu.patch
 Patch22:	0022-Do-not-require-uid-gid-of-files-to-have-a-valid-user.patch
 Patch23:	0023-Support-build-in-place-to-run-build-and-install-from.patch
-Patch24:	0024-add-new-dbi-flag-really_nodbsync.patch
 Patch25:	0025-macros-Support-noecho-macro-to-quieten-build-scriptl.patch
 Patch26:	0026-fix-rpmbuild-build-in-place-to-work-with-target-opti.patch
 Patch27:	0027-Implement-macro-to-skip-install-processing-step.patch
@@ -131,7 +130,6 @@ that are used to build packages using the RPM Package Manager.
 #%patch21 -p1
 #%patch22 -p1
 #%patch23 -p1
-#%patch24 -p1
 #%patch25 -p1
 #%patch26 -p1
 #%patch27 -p1

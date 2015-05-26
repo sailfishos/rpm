@@ -10,8 +10,6 @@ Source1: libsymlink.attr
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
 Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch
 Patch14:	0014-OpenSUSE-finddebuginfo-absolute-links.patch
-Patch15:	0015-OpenSUSE-autodeps.patch
-Patch16:	0016-OpenSUSE-buildidprov.patch
 Patch17:	0017-OpenSUSE-debugsubpkg.patch
 Patch18:	0018-OpenSUSE-fileattrs.patch
 Patch19:	0019-OpenSUSE-elfdeps.patch
@@ -107,8 +105,6 @@ that are used to build packages using the RPM Package Manager.
 #%patch12 -p1
 #%patch13 -p1
 #%patch14 -p1
-#%patch15 -p1
-#%patch16 -p1
 #%patch17 -p1
 #%patch18 -p1
 #%patch19 -p1

@@ -22,7 +22,6 @@ Patch16:	0016-OpenSUSE-buildidprov.patch
 Patch17:	0017-OpenSUSE-debugsubpkg.patch
 Patch18:	0018-OpenSUSE-fileattrs.patch
 Patch19:	0019-OpenSUSE-elfdeps.patch
-Patch20:	0020-Add-noclean-and-nocheck-options-to-rpmbuild.patch
 Patch21:	0021-Add-do-phase-args-and-noprep-arg-for-control-over-bu.patch
 Patch22:	0022-Do-not-require-uid-gid-of-files-to-have-a-valid-user.patch
 Patch23:	0023-Support-build-in-place-to-run-build-and-install-from.patch
@@ -136,7 +135,6 @@ that are used to build packages using the RPM Package Manager.
 #%patch17 -p1
 #%patch18 -p1
 #%patch19 -p1
-#%patch20 -p1
 #%patch21 -p1
 #%patch22 -p1
 #%patch23 -p1

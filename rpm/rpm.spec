@@ -9,7 +9,6 @@ Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch3:	0003-rpm-macros.patch
 Patch5:	0005-debuginfo.diff.patch
-Patch6:	0006-rpm-shorten-changelog.patch
 Patch7:	0007-rpm-4.7.1-mips64el.patch
 Patch8:	0008-rpm-4.9.1.2-skipprep.patch
 Patch10:	0010-rpm-disable-multilib.patch
@@ -122,7 +121,6 @@ that are used to build packages using the RPM Package Manager.
 %setup -q  -n rpm-%{version}
 #%patch3 -p1
 #%patch5 -p1
-#%patch6 -p1
 #%patch7 -p1
 #%patch8 -p1
 #%patch10 -p1

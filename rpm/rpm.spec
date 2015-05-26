@@ -19,7 +19,6 @@ Patch17:	0017-OpenSUSE-debugsubpkg.patch
 Patch18:	0018-OpenSUSE-fileattrs.patch
 Patch19:	0019-OpenSUSE-elfdeps.patch
 Patch22:	0022-Do-not-require-uid-gid-of-files-to-have-a-valid-user.patch
-Patch25:	0025-macros-Support-noecho-macro-to-quieten-build-scriptl.patch
 Patch27:	0027-Implement-macro-to-skip-install-processing-step.patch
 Group: System/Base
 Url: http://www.rpm.org/
@@ -122,7 +121,6 @@ that are used to build packages using the RPM Package Manager.
 #%patch18 -p1
 #%patch19 -p1
 #%patch22 -p1
-#%patch25 -p1
 #%patch27 -p1
 
 %build

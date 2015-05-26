@@ -7,7 +7,6 @@ Version: 4.9.1.2
 Release: 21
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
-Patch5:	0005-debuginfo.diff.patch
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
 Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch
 Patch14:	0014-OpenSUSE-finddebuginfo-absolute-links.patch
@@ -105,7 +104,6 @@ that are used to build packages using the RPM Package Manager.
 
 %prep
 %setup -q  -n rpm-%{version}
-#%patch5 -p1
 #%patch12 -p1
 #%patch13 -p1
 #%patch14 -p1

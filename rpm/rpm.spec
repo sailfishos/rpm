@@ -8,7 +8,6 @@ Release: 21
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch5:	0005-debuginfo.diff.patch
-Patch8:	0008-rpm-4.9.1.2-skipprep.patch
 Patch10:	0010-rpm-disable-multilib.patch
 Patch11:	0011-Possibility-to-do-cross-platform-rpmrcs-with-ease.patch
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
@@ -19,11 +18,8 @@ Patch16:	0016-OpenSUSE-buildidprov.patch
 Patch17:	0017-OpenSUSE-debugsubpkg.patch
 Patch18:	0018-OpenSUSE-fileattrs.patch
 Patch19:	0019-OpenSUSE-elfdeps.patch
-Patch21:	0021-Add-do-phase-args-and-noprep-arg-for-control-over-bu.patch
 Patch22:	0022-Do-not-require-uid-gid-of-files-to-have-a-valid-user.patch
-Patch23:	0023-Support-build-in-place-to-run-build-and-install-from.patch
 Patch25:	0025-macros-Support-noecho-macro-to-quieten-build-scriptl.patch
-Patch26:	0026-fix-rpmbuild-build-in-place-to-work-with-target-opti.patch
 Patch27:	0027-Implement-macro-to-skip-install-processing-step.patch
 Group: System/Base
 Url: http://www.rpm.org/
@@ -115,7 +111,6 @@ that are used to build packages using the RPM Package Manager.
 %prep
 %setup -q  -n rpm-%{version}
 #%patch5 -p1
-#%patch8 -p1
 #%patch10 -p1
 #%patch11 -p1
 #%patch12 -p1
@@ -126,11 +121,8 @@ that are used to build packages using the RPM Package Manager.
 #%patch17 -p1
 #%patch18 -p1
 #%patch19 -p1
-#%patch21 -p1
 #%patch22 -p1
-#%patch23 -p1
 #%patch25 -p1
-#%patch26 -p1
 #%patch27 -p1
 
 %build

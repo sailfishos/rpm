@@ -8,7 +8,6 @@ Release: 21
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch3:	0003-rpm-macros.patch
-Patch4:	0004-rpm-4.9.0-meego-arm.patch
 Patch5:	0005-debuginfo.diff.patch
 Patch6:	0006-rpm-shorten-changelog.patch
 Patch7:	0007-rpm-4.7.1-mips64el.patch
@@ -32,7 +31,6 @@ Patch24:	0024-add-new-dbi-flag-really_nodbsync.patch
 Patch25:	0025-macros-Support-noecho-macro-to-quieten-build-scriptl.patch
 Patch26:	0026-fix-rpmbuild-build-in-place-to-work-with-target-opti.patch
 Patch27:	0027-Implement-macro-to-skip-install-processing-step.patch
-Patch28:	0028-Replace-mno-thumb-compiler-option-with-marm.patch
 Patch29:	0029-Add-aarch64-support.patch
 Patch30:        0030-rpm-4.8.0-CVE-2013-6435.patch
 Group: System/Base
@@ -125,7 +123,6 @@ that are used to build packages using the RPM Package Manager.
 %prep
 %setup -q  -n rpm-%{version}
 #%patch3 -p1
-#%patch4 -p1
 #%patch5 -p1
 #%patch6 -p1
 #%patch7 -p1
@@ -149,7 +146,6 @@ that are used to build packages using the RPM Package Manager.
 #%patch25 -p1
 #%patch26 -p1
 #%patch27 -p1
-#%patch28 -p1
 #%patch29 -p1
 #%patch30 -p1
 

@@ -1,3 +1,6 @@
+* Wed Jun 15 2016 Pekka Vuorela <pekka.vuorela@jollamobile.com> 4.9.1.2-22
+- Install missing automake files. Contributes to JB#35132
+
 * Tue Dec 09 2014 Pasi Sjöholm <pasi.sjoholm@jollamobile.com> - 4.9.1.2-21
 - Fix CVE-2013-6435
 

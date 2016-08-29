@@ -22,12 +22,13 @@ diff --git a/fileattrs/Makefile.am b/fileattrs/Makefile.am
 index 0fd1435..99693e2 100644
 --- a/fileattrs/Makefile.am
 +++ b/fileattrs/Makefile.am
-@@ -5,7 +5,8 @@ include $(top_srcdir)/rpm.am
+@@ -5,7 +5,7 @@ include $(top_srcdir)/rpm.am
  fattrsdir = $(rpmconfigdir)/fileattrs
  
  fattrs_DATA = \
--	desktop.attr elf.attr font.attr libtool.attr perl.attr perllib.attr \
--	pkgconfig.attr python.attr ocaml.attr script.attr mono.attr
+-	appdata.attr desktop.attr elf.attr font.attr libtool.attr perl.attr \
+-	perllib.attr pkgconfig.attr python.attr ocaml.attr script.attr \
+-	mono.attr
 +	elf.attr font.attr libtool.attr perl.attr perllib.attr \
 +	pkgconfig.attr python.attr ocaml.attr script.attr mono.attr \
 +	debuginfo.attr elflib.attr firmware.attr ksyms.attr sysvinit.attr
@@ -45,11 +46,8 @@ diff --git a/fileattrs/elf.attr b/fileattrs/elf.attr
 index bc6ce83..49de068 100644
 --- a/fileattrs/elf.attr
 +++ b/fileattrs/elf.attr
-@@ -1,4 +1,5 @@
- %__elf_provides		%{_rpmconfigdir}/elfdeps --provides %{?__filter_GLIBC_PRIVATE:--filter-private}
- %__elf_requires		%{_rpmconfigdir}/elfdeps --requires %{?__filter_GLIBC_PRIVATE:--filter-private}
--%__elf_magic		^(sticky )?ELF (32|64)-bit.*$
-+%__elf_magic		^(setuid )?(setgid )?(sticky )?ELF (32|64)-bit.*executable
+@@ -3,2 +3,3 @@
+ %__elf_magic		^(setuid )?(setgid )?(sticky )?ELF (32|64)-bit.*$
  %__elf_flags		exeonly
 +%__elf_exclude_path	^/usr/lib/debug/
 diff --git a/fileattrs/elflib.attr b/fileattrs/elflib.attr

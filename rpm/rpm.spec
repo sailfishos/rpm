@@ -102,12 +102,12 @@ that are used to build packages using the RPM Package Manager.
 
 %prep
 %setup -q  -n rpm-%{version}
-#%patch12 -p1
-#%patch13 -p1
-#%patch14 -p1
-#%patch17 -p1
-#%patch18 -p1
-#%patch19 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"

@@ -281,16 +281,15 @@ diff --git a/macros.in b/macros.in
 index 55fb4c9..2819ed7 100644
 --- a/macros.in
 +++ b/macros.in
-@@ -181,24 +181,10 @@
+@@ -186,23 +186,11 @@
  #	Template for debug information sub-package.
  %debug_package \
+ %ifnarch noarch\
  %global __debug_package 1\
 -%package debuginfo\
 -Summary: Debug information for package %{name}\
 -Group: Development/Debug\
--AutoReq: 0\
--AutoProv: 1\
--#Requires: %{?!debug_package_requires:%{name} = %{version}-%{release}}%{?debug_package_requires}\
+-AutoReqProv: 0\
 -%description debuginfo\
 -This package provides debug information for package %{name}.\
 -Debug information is useful when developing applications that use this\
@@ -310,13 +309,13 @@ diff --git a/scripts/find-debuginfo.sh b/scripts/find-debuginfo.sh
 index c2cb46d..53bd369 100644
 --- a/scripts/find-debuginfo.sh
 +++ b/scripts/find-debuginfo.sh
-@@ -286,19 +286,11 @@ while read nlinks inum f; do
+@@ -311,19 +311,11 @@ while read nlinks inum f; do
    fi
  done || exit
  
 -# For each symlink whose target has a .debug file,
 -# make a .debug symlink to that file.
--find $RPM_BUILD_ROOT ! -path "${debugdir}/*" -type l -print |
+-find "$RPM_BUILD_ROOT" ! -path "${debugdir}/*" -type l -print |
 -while read f
 -do
 -  t=$(readlink -m "$f").debug

@@ -3,6 +3,8 @@ From: David Greaves <david@dgreaves.com>
 Date: Wed, 17 Apr 2013 20:41:09 +0000
 Subject: [PATCH] OpenSUSE-elfdeps
 
+In OpenSUSE sources: assumeexec.diff
+
 ---
  tools/elfdeps.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)

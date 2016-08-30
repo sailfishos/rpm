@@ -3,9 +3,9 @@
 
 Summary: The RPM package management system
 Name: rpm
-Version: 4.12.0
+Version: 4.13.0.rc1
 Release: 1
-Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
+Source0: http://rpm.org/releases/%{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
 Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch
@@ -104,7 +104,7 @@ that are used to build packages using the RPM Package Manager.
 #
 
 %prep
-%setup -q  -n rpm-%{version}
+%setup -q  -n rpm-%{version}/upstream
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
@@ -118,8 +118,6 @@ that are used to build packages using the RPM Package Manager.
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
-
-cd upstream
 
 ./autogen.sh \
     --prefix=%{_usr} \
@@ -140,7 +138,6 @@ make %{?jobs:-j%jobs}
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cd upstream
 %make_install
 
 
@@ -173,8 +170,6 @@ done
 
 
 %find_lang %{name}
-# avoid dragging in tonne of perl libs for an unused script
-chmod 0644 $RPM_BUILD_ROOT/%{_libdir}/rpm/perldeps.pl
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -192,9 +187,9 @@ if [ -x "$dbstat" ]; then
 fi
 exit 0
 
-%files -f upstream/%{name}.lang
+%files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc upstream/GROUPS upstream/COPYING upstream/CREDITS
+%doc GROUPS COPYING CREDITS
 
 %dir %{_sysconfdir}/rpm
 
@@ -212,6 +207,8 @@ exit 0
 %{_bindir}/rpmverify
 %{_bindir}/rpm2archive
 %{_libdir}/rpm-plugins/syslog.so
+%{_libdir}/rpm-plugins/ima.so
+%{_libdir}/rpm-plugins/systemd_inhibit.so
 
 %doc %{_mandir}/man8/rpm.8*
 %doc %{_mandir}/man8/rpm2cpio.8*
@@ -267,13 +264,10 @@ exit 0
 %{_libdir}/rpm/mono-find-requires
 %{_libdir}/rpm/ocaml-find-provides.sh
 %{_libdir}/rpm/ocaml-find-requires.sh
-%{_libdir}/rpm/osgideps.pl
-%{_libdir}/rpm/perldeps.pl
 %{_libdir}/rpm/libtooldeps.sh
 %{_libdir}/rpm/pkgconfigdeps.sh
 %{_libdir}/rpm/perl.prov
 %{_libdir}/rpm/perl.req
-%{_libdir}/rpm/tcl.req
 %{_libdir}/rpm/pythondeps.sh
 %{_libdir}/rpm/rpmdeps
 %{_libdir}/rpm/config.guess

@@ -22,16 +22,14 @@ diff --git a/fileattrs/Makefile.am b/fileattrs/Makefile.am
 index 0fd1435..99693e2 100644
 --- a/fileattrs/Makefile.am
 +++ b/fileattrs/Makefile.am
-@@ -5,7 +5,7 @@ include $(top_srcdir)/rpm.am
+@@ -5,8 +5,8 @@ include $(top_srcdir)/rpm.am
  fattrsdir = $(rpmconfigdir)/fileattrs
  
  fattrs_DATA = \
--	appdata.attr desktop.attr elf.attr font.attr libtool.attr perl.attr \
--	perllib.attr pkgconfig.attr python.attr ocaml.attr script.attr \
+ 	appdata.attr desktop.attr elf.attr font.attr libtool.attr perl.attr \
+ 	perllib.attr pkgconfig.attr python.attr ocaml.attr script.attr \
 -	mono.attr
-+	elf.attr font.attr libtool.attr perl.attr perllib.attr \
-+	pkgconfig.attr python.attr ocaml.attr script.attr mono.attr \
-+	debuginfo.attr elflib.attr firmware.attr ksyms.attr sysvinit.attr
++	mono.attr debuginfo.attr elflib.attr firmware.attr ksyms.attr sysvinit.attr
  
  EXTRA_DIST = $(fattrs_DATA)
 diff --git a/fileattrs/debuginfo.attr b/fileattrs/debuginfo.attr

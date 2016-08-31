@@ -34,6 +34,7 @@ BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: libtool
 BuildRequires: gawk
+BuildRequires: dbus-devel
 BuildRequires: elfutils-devel >= 0.112
 BuildRequires: elfutils-libelf-devel
 BuildRequires: readline-devel zlib-devel

@@ -5,7 +5,7 @@ Summary: The RPM package management system
 Name: rpm
 Version: 4.13.0.rc1
 Release: 1
-Source0: http://rpm.org/releases/upstream.tar.bz2
+Source0: http://rpm.org/releases/%{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
 Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch

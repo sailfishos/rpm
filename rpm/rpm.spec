@@ -51,6 +51,7 @@ BuildRequires: lua-devel >= 5.1
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
+BuildRequires: dbus-devel
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 

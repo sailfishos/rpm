@@ -3,6 +3,10 @@ From: David Greaves <david@dgreaves.com>
 Date: Wed, 17 Apr 2013 20:41:09 +0000
 Subject: [PATCH] OpenSUSE-finddebuginfo-absolute-links
 
+Since brp-symlink relinks symbolic links to enforce a certain policy we should
+do it right in the first place. So this patch changes find-debuginfo.sh scripts
+behavior to reflect that policy.
+
 ---
  scripts/find-debuginfo.sh | 16 +++++++++++++---
  1 file changed, 13 insertions(+), 3 deletions(-)

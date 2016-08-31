@@ -3,6 +3,8 @@ From: David Greaves <david@dgreaves.com>
 Date: Wed, 17 Apr 2013 20:41:09 +0000
 Subject: [PATCH] OpenSUSE-debugsubpkg
 
+Create a debuginfo package for each subpackage.
+
 ---
  build/files.c             | 236 +++++++++++++++++++++++++++++++++++++++++++++-
  macros.in                 |  14 ---
@@ -13,18 +15,18 @@ diff --git a/build/files.c b/build/files.c
 index e0747f8..9fa9e29 100644
 --- a/build/files.c
 +++ b/build/files.c
-@@ -20,6 +20,10 @@
- #include <rpm/rpmfileutil.h>	/* rpmDoDigest() */
+@@ -21,6 +21,10 @@
  #include <rpm/rpmlog.h>
+ #include <rpm/rpmbase64.h>
  
 +#if HAVE_GELF_H
 +#include <gelf.h>
 +#endif
 +
  #include "rpmio/rpmio_internal.h"	/* XXX rpmioSlurp */
- #include "rpmio/base64.h"
  #include "misc/fts.h"
-@@ -2128,13 +2132,237 @@ exit:
+ #include "lib/cpio.h"
+@@ -2084,13 +2088,241 @@ exit:
      return rc;
  }
  
@@ -228,7 +230,7 @@ index e0747f8..9fa9e29 100644
 +	   new debuginfo package.  */
 +	if (files)
 +	  {
-+	    dbg = newPackage (spec);
++	    dbg = newPackage(NULL, spec->pool, &spec->packages);
 +	    headerNVR (pkg->header, &name, NULL, NULL);
 +	    /* Set name, summary and group.  */
 +	    snprintf (tmp, 1024, "%s-debuginfo", name);
@@ -242,6 +244,10 @@ index e0747f8..9fa9e29 100644
 +	    headerPutString(dbg->header, RPMTAG_GROUP, "Development/Debug");
 +	    /* Inherit other tags from parent.  */
 +	    headerCopyTags (pkg->header, dbg->header, copyTagsForDebug);
++
++	    /* Add self-provides */
++	    dbg->ds = rpmdsThis(dbg->header, RPMTAG_REQUIRENAME, RPMSENSE_EQUAL);
++	    addPackageProvides(dbg);
 +
 +	    /* Build up the files list.  */
 +	    dbg->fileList = files;
@@ -262,7 +268,7 @@ index e0747f8..9fa9e29 100644
      genSourceRpmName(spec);
      
      for (pkg = spec->packages; pkg != NULL; pkg = pkg->next) {
-@@ -2150,8 +2378,12 @@ rpmRC processBinaryFiles(rpmSpec spec, rpmBuildPkgFlags pkgFlags,
+@@ -2108,8 +2340,12 @@ rpmRC processBinaryFiles(rpmSpec spec, r
  	rpmlog(RPMLOG_NOTICE, _("Processing files: %s\n"), nvr);
  	free(nvr);
  		   
@@ -277,10 +283,35 @@ index e0747f8..9fa9e29 100644
  	    goto exit;
  
  	a = headerGetString(pkg->header, RPMTAG_ARCH);
-diff --git a/macros.in b/macros.in
-index 55fb4c9..2819ed7 100644
---- a/macros.in
-+++ b/macros.in
+--- ./build/parseSpec.c.orig	2014-08-18 12:44:49.564619395 +0000
++++ ./build/parseSpec.c	2014-08-18 12:44:59.187569649 +0000
+@@ -503,7 +503,7 @@ static void initSourceHeader(rpmSpec spe
+ }
+ 
+ /* Add extra provides to package.  */
+-static void addPackageProvides(Package pkg)
++void addPackageProvides(Package pkg)
+ {
+     const char *arch, *name;
+     char *evr, *isaprov;
+--- ./build/rpmbuild_internal.h.orig	2014-08-18 12:43:17.461092324 +0000
++++ ./build/rpmbuild_internal.h	2014-08-18 12:44:25.578739914 +0000
+@@ -425,6 +425,13 @@ int addReqProv(Package pkg, rpmTagVal ta
+ 		uint32_t index);
+ 
+ /** \ingroup rpmbuild
++ * Add self-provides to package.
++ * @param pkg		package
++ */
++RPM_GNUC_INTERNAL
++void addPackageProvides(Package pkg);
++
++/** \ingroup rpmbuild
+  * Add rpmlib feature dependency.
+  * @param pkg		package
+  * @param feature	rpm feature name (i.e. "rpmlib(Foo)" for feature Foo)
+--- ./macros.in.orig	2014-08-18 12:37:19.206933957 +0000
++++ ./macros.in	2014-08-18 12:37:30.648875217 +0000
 @@ -186,23 +186,11 @@
  #	Template for debug information sub-package.
  %debug_package \
@@ -305,11 +336,21 @@ index 55fb4c9..2819ed7 100644
  %description debugsource\
  This package provides debug sources for package %{name}.\
  Debug sources are useful when developing applications that use this\
-diff --git a/scripts/find-debuginfo.sh b/scripts/find-debuginfo.sh
-index c2cb46d..53bd369 100644
---- a/scripts/find-debuginfo.sh
-+++ b/scripts/find-debuginfo.sh
-@@ -311,19 +311,11 @@ while read nlinks inum f; do
+--- ./scripts/find-debuginfo.sh.orig	2014-08-18 12:37:19.201933983 +0000
++++ ./scripts/find-debuginfo.sh	2014-08-18 12:37:30.648875217 +0000
+@@ -149,6 +149,11 @@ debug_link()
+ # Provide .2, .3, ... symlinks to all filename instances of this build-id.
+ make_id_dup_link()
+ {
++  # See https://bugzilla.redhat.com/show_bug.cgi?id=641377 for the reasoning, 
++  # but it has seveal drawbacks as we would need to split the .1 suffixes into 
++  # different subpackages and it's about impossible to predict the number
++  # -> perhaps later
++  return
+   local id="$1" file="$2" idfile
+ 
+   local n=1
+@@ -311,19 +316,11 @@ while read nlinks inum f; do
    fi
  done || exit
  
@@ -334,6 +375,3 @@ index c2cb46d..53bd369 100644
  
  if [ -s "$SOURCEFILE" ]; then
    mkdir -p "${RPM_BUILD_ROOT}/usr/src/debug"
--- 
-1.8.3-rc3
-

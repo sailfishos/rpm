@@ -136,6 +136,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %make_install
 
+# HACK: include older .so so we can get everything rebuild properly
+cp -a /%{_libdir}/librpm.so.2.0.2 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpm.so.2 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpmbuild.so.2.0.1 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpmbuild.so.2 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpmio.so.2.0.1 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpmio.so.2 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpmsign.so.0.0.1 $RPM_BUILD_ROOT/%{_libdir}/
+cp -a /%{_libdir}/librpmsign.so.0 $RPM_BUILD_ROOT/%{_libdir}/
 
 #sed "s/i386/arm/g" platform > platform.arm
 #sed "s/i386/mipsel/g" platform > platform.mipsel

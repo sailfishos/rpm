@@ -97,6 +97,7 @@ Group: Development/Libraries
 License: GPLv2+ and LGPLv2+ with exceptions
 Requires: rpm = %{version}-%{release}
 Requires: file-devel
+Requires: popt-devel
 
 %description devel
 This package contains the RPM C library and header files. These

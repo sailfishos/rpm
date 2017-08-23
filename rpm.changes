@@ -1,3 +1,6 @@
+* Wed Aug 23 2017 Martin Kampas <martin.kampas@jollamobile.com> - 4.9.1.2-24
+- [macros] Add __python3 macro. Contributes to JB#39483
+
 * Wed May 24 2017 Pekka Vuorela <pekka.vuorela@jollamobile.com> - 4.9.1.2-23
 - Make devel package depend on popt headers. Fixes MER#1777
 

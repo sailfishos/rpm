@@ -4,7 +4,7 @@
 Summary: The RPM package management system
 Name: rpm
 Version: 4.9.1.2
-Release: 21
+Release: 24
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch1:	0001-rpm-4.5.90-pkgconfig-path.patch
@@ -37,6 +37,7 @@ Patch27:	0027-Implement-macro-to-skip-install-processing-step.patch
 Patch28:	0028-Replace-mno-thumb-compiler-option-with-marm.patch
 Patch29:	0029-Add-aarch64-support.patch
 Patch30:        0030-rpm-4.8.0-CVE-2013-6435.patch
+Patch31:	0031-add-python3-macro.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -165,6 +166,7 @@ that will manipulate RPM packages and databases.
 %patch28 -p1
 %patch29 -p1
 %patch30 -p1
+%patch31 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"

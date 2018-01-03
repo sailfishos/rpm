@@ -1,4 +1,4 @@
-From 1909dcd217cd543fa80aee55854fac3200573f93 Mon Sep 17 00:00:00 2001
+From 6b7065579560df1e82359923734ccef382307f8a Mon Sep 17 00:00:00 2001
 From: David Greaves <david@dgreaves.com>
 Date: Wed, 17 Apr 2013 20:41:08 +0000
 Subject: [PATCH] rpm-macros
@@ -10,17 +10,17 @@ Subject: [PATCH] rpm-macros
  3 files changed, 24 insertions(+)
 
 diff --git a/configure.ac b/configure.ac
-index 45af439..91fa3b1 100644
+index 45af439..10626a8 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -830,6 +830,7 @@ unknown|pc|ibm|redhat|pld|mandrake|conectiva|lvr|yellowdog|caos|suse)
- 	test -f /etc/redhat-release &&		RPMCANONVENDOR=redhat
- 	test -f /etc/SuSE-release &&		RPMCANONVENDOR=suse
- 	test -f /etc/pld-release &&		RPMCANONVENDOR=pld
-+	test -f /etc/meego-release &&		RPMCANONVENDOR=meego
- 	test -f /etc/mandrake-release &&	RPMCANONVENDOR=mandrake
- 	test -f /etc/conectiva-release &&	RPMCANONVENDOR=conectiva
+@@ -835,6 +835,7 @@ unknown|pc|ibm|redhat|pld|mandrake|conectiva|lvr|yellowdog|caos|suse)
  	test -f /etc/lvr-release &&		RPMCANONVENDOR=lvr
+ 	test -f /etc/yellowdog-release &&	RPMCANONVENDOR=yellowdog
+ 	test -f /etc/caos-release &&		RPMCANONVENDOR=caos
++	RPMCANONVENDOR=meego
+ 	;;
+ esac
+ RPMCANONOS="$host_os_noversion"
 diff --git a/installplatform b/installplatform
 index 5973a18..09952f0 100755
 --- a/installplatform
@@ -67,5 +67,5 @@ index a04d8fc..1b8eeb8 100644
  @apple@#---------------------------------------------------------------------
  @apple@#	Apple Darwin vendor specific macros
 -- 
-1.8.3-rc3
+2.15.0
 

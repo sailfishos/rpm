@@ -9,7 +9,7 @@
 
 %define rpmhome /usr/lib/rpm
 
-%define rpmver 4.13.0.rc1
+%define rpmver 4.14.1
 
 %global py_ver %(python2 -c 'import sys; print sys.version[:3]')
 
@@ -19,18 +19,17 @@
 
 Summary: The RPM package management system
 Name: rpm-python
-Version: 4.13.0.rc1
+Version: 4.14.1
 Release: 1
 BuildRequires: python-devel
 # Up to END_OF_INCLUDE_IN_PYTHON_SPEC lines are from the main spec file
 Source0: http://rpm.org/releases/%{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
-Patch12:	0012-openSUSE-finddebuginfo-patch.patch
-Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch
-Patch14:	0014-OpenSUSE-finddebuginfo-absolute-links.patch
-Patch17:	0017-OpenSUSE-debugsubpkg.patch
-Patch18:	0018-OpenSUSE-fileattrs.patch
-Patch19:	0019-OpenSUSE-elfdeps.patch
+Patch1:  0001-openSUSE-finddebuginfo-patch.patch
+Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
+Patch3:  0003-OpenSUSE-debugsubpkg.patch
+Patch4:  0004-OpenSUSE-fileattrs.patch
+Patch5:  0005-OpenSUSE-elfdeps.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -83,12 +82,11 @@ the package like its version, a description, etc.
 %prep
 # prep and build sections are from the main spec file
 %setup -q  -n %{name}-%{version}/upstream
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
@@ -109,7 +107,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-lua \
     --with-cap  
 
-make %{?jobs:-j%jobs}
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT

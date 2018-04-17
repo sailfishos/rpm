@@ -3,16 +3,15 @@
 
 Summary: The RPM package management system
 Name: rpm
-Version: 4.13.0.rc1
+Version: 4.14.1
 Release: 1
 Source0: http://rpm.org/releases/%{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
-Patch12:	0012-openSUSE-finddebuginfo-patch.patch
-Patch13:	0013-Add-debugsource-package-to-rpm-straight-don-t-strip.patch
-Patch14:	0014-OpenSUSE-finddebuginfo-absolute-links.patch
-Patch17:	0017-OpenSUSE-debugsubpkg.patch
-Patch18:	0018-OpenSUSE-fileattrs.patch
-Patch19:	0019-OpenSUSE-elfdeps.patch
+Patch1:  0001-openSUSE-finddebuginfo-patch.patch
+Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
+Patch3:  0003-OpenSUSE-debugsubpkg.patch
+Patch4:  0004-OpenSUSE-fileattrs.patch
+Patch5:  0005-OpenSUSE-elfdeps.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -27,6 +26,7 @@ License: GPLv2+
 Requires: curl
 Requires: coreutils
 Requires: db4-utils
+Requires: dbus
 BuildRequires: db4-devel
 
 BuildRequires: meego-rpm-config
@@ -50,6 +50,7 @@ BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
 BuildRequires: dbus-devel
+BuildRequires: python
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -103,12 +104,11 @@ that are used to build packages using the RPM Package Manager.
 
 %prep
 %setup -q  -n rpm-%{version}/upstream
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
@@ -129,7 +129,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-lua \
     --with-cap  
 
-make %{?jobs:-j%jobs}
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -157,12 +157,11 @@ find %{buildroot} -regex ".*\\.la$" | xargs rm -f --
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/rpm
+mkdir -p $RPM_BUILD_ROOT/bin
 install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/libsymlink.attr
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
-
-#install -m 755 scripts/debuginfo.prov $RPM_BUILD_ROOT/usr/lib/rpm
-
+ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
 for dbi in \
     Basenames Conflictname Dirnames Group Installtid Name Packages \
@@ -195,7 +194,7 @@ exit 0
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc GROUPS COPYING CREDITS
+%doc COPYING CREDITS README
 
 %dir %{_sysconfdir}/rpm
 
@@ -204,6 +203,7 @@ exit 0
 %attr(0755, root, root) %dir %{_libdir}/rpm
 
 /bin/rpm
+%{_bindir}/rpm
 %{_bindir}/rpmkeys
 %{_bindir}/rpmspec
 %{_bindir}/rpm2cpio
@@ -215,6 +215,7 @@ exit 0
 %{_libdir}/rpm-plugins/syslog.so
 %{_libdir}/rpm-plugins/ima.so
 %{_libdir}/rpm-plugins/systemd_inhibit.so
+%{_libdir}/rpm-plugins/prioreset.so
 
 %doc %{_mandir}/man8/rpm.8*
 %doc %{_mandir}/man8/rpm2cpio.8*
@@ -222,6 +223,8 @@ exit 0
 %doc %{_mandir}/man8/rpmkeys.8.gz
 %doc %{_mandir}/man8/rpmsign.8.gz
 %doc %{_mandir}/man8/rpmspec.8.gz
+%doc %{_mandir}/man8/rpm-misc.8.gz
+%doc %{_mandir}/man8/rpm-plugin-systemd-inhibit.8.gz
 
 # XXX this places translated manuals to wrong package wrt eg rpmbuild
 %lang(fr) %{_mandir}/fr/man[18]/*.[18]*
@@ -284,8 +287,14 @@ exit 0
 %{_libdir}/rpm/macros.perl
 %{_libdir}/rpm/macros.python
 %{_libdir}/rpm/macros.php
-%{_libdir}/rpm/appdata.prov
 %{_libdir}/rpm/rpm.supp
+%{_libdir}/rpm/debuginfo.prov
+%{_libdir}/rpm/metainfo.prov
+%{_libdir}/rpm/python-macro-helper
+%{_libdir}/rpm/pythondistdeps.py
+%{_libdir}/rpm/pythondistdeps.pyc
+%{_libdir}/rpm/pythondistdeps.pyo
+%{_libdir}/rpm/sepdebugcrcfix
 
 %{_mandir}/man8/rpmbuild.8*
 %{_mandir}/man8/rpmdeps.8*

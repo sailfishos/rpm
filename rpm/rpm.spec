@@ -12,8 +12,8 @@ Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
 Patch3:  0003-OpenSUSE-debugsubpkg.patch
 Patch4:  0004-OpenSUSE-fileattrs.patch
 Patch5:  0005-OpenSUSE-elfdeps.patch
-Patch31:	0031-add-python3-macro.patch
-Patch32:	0032-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
+Patch6:  0006-add-python3-macro.patch
+Patch7:  0007-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -110,8 +110,8 @@ that are used to build packages using the RPM Package Manager.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch31 -p1
-%patch32 -p1
+%patch6 -p1
+%patch7 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"

@@ -1,0 +1,30 @@
+From b028fdb25e713535fff26b1a58647352a3e83df7 Mon Sep 17 00:00:00 2001
+From: Martin Kampas <martin.kampas@jolla.com>
+Date: Tue, 10 Apr 2018 10:48:19 +0200
+Subject: [PATCH] rpmbuild: Add "--nobuildstage" to not execute %build stage
+
+Note that "--nobuild" already exists and does something different.
+
+This option allows to execute build phases separately much like
+"--short-circuit" does but does not produce tainted packages.
+---
+ rpmbuild.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/rpmbuild.c b/rpmbuild.c
+index ffb61fc80..7b481d7d8 100644
+--- a/rpmbuild.c
++++ b/rpmbuild.c
+@@ -230,6 +230,8 @@ static struct poptOption rpmBuildPoptTable[] = {
+ 	N_("do not execute %clean stage of the build"), NULL },
+  { "noprep", '\0', POPT_BIT_SET, &nobuildAmount, RPMBUILD_PREP,
+ 	N_("do not execute %prep stage of the build"), NULL },
++ { "nobuildstage", '\0', POPT_BIT_SET, &nobuildAmount, RPMBUILD_BUILD,
++	N_("do not execute %build stage of the build (see also --nobuild)"), NULL },
+  { "nocheck", '\0', POPT_BIT_SET, &nobuildAmount, RPMBUILD_CHECK,
+ 	N_("do not execute %check stage of the build"), NULL },
+ 
+-- 
+2.16.2
+
+

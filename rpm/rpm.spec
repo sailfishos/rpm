@@ -28,7 +28,6 @@ License: GPLv2+
 Requires: curl
 Requires: coreutils
 Requires: db4-utils
-Requires: dbus
 BuildRequires: db4-devel
 
 BuildRequires: meego-rpm-config
@@ -51,7 +50,6 @@ BuildRequires: lua-devel >= 5.1
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
-BuildRequires: dbus-devel
 BuildRequires: python
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -164,6 +162,7 @@ mkdir -p $RPM_BUILD_ROOT%{_libdir}/rpm
 mkdir -p $RPM_BUILD_ROOT/bin
 install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/libsymlink.attr
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/ksyms.attr
+rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm-plugins/systemd_inhibit.so
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
@@ -218,7 +217,6 @@ exit 0
 %{_bindir}/rpm2archive
 %{_libdir}/rpm-plugins/syslog.so
 %{_libdir}/rpm-plugins/ima.so
-%{_libdir}/rpm-plugins/systemd_inhibit.so
 %{_libdir}/rpm-plugins/prioreset.so
 
 %doc %{_mandir}/man8/rpm.8*

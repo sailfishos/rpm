@@ -93,7 +93,7 @@ will manipulate RPM packages and databases.
 Summary: Scripts and executable programs used to build packages
 Group: Development/Tools
 Requires: rpm = %{version}-%{release}
-Requires: elfutils >= 0.128 binutils
+Requires: elfutils >= 0.128 binutils elfutils-libs
 Requires: findutils sed grep gawk diffutils file patch >= 2.5
 Requires: unzip gzip bzip2 cpio lzma xz
 Requires: pkgconfig

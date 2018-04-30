@@ -1,0 +1,55 @@
+From ab71796387bf91ae036c577a461d4ead259d47f1 Mon Sep 17 00:00:00 2001
+From: Andrew Branson <andrew.branson@jollamobile.com>
+Date: Mon, 30 Apr 2018 17:14:48 +0200
+Subject: [PATCH] Omit debug info from main package, and enable debugsource
+ packages
+
+---
+ macros.in | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/macros.in b/macros.in
+index d086248..73f8359 100644
+--- a/macros.in
++++ b/macros.in
+@@ -429,13 +429,13 @@
+ # Should missing %doc files in the build directory terminate a build?
+ #
+ # Note: The default value should be 0 for legacy compatibility.
+-%_missing_doc_files_terminate_build	1
++%_missing_doc_files_terminate_build	0
+ 
+ #
+ # Should empty %files manifest file terminate a build?
+ #
+ # Note: The default value should be 0 for legacy compatibility.
+-%_empty_manifest_terminate_build	1
++%_empty_manifest_terminate_build	0
+ 
+ #
+ # Should binaries in noarch packages terminate a build?
+@@ -522,7 +523,7 @@ package or when debugging this package.\
+ #   Same as for "separate" but if the __debug_package global is set then
+ #   the -debuginfo package will have a compatibility link for the main
+ #   ELF /usr/lib/debug/.build-id/xx/yyy -> /usr/lib/.build-id/xx/yyy
+-%_build_id_links compat
++%_build_id_links alldebug
+ 
+ # Whether build-ids should be made unique between package version/releases
+ # when generating debuginfo packages. If set to 1 this will pass
+@@ -551,10 +552,10 @@ package or when debugging this package.\
+ %_unique_debug_srcs	1
+ 
+ # Whether rpm should put debug source files into its own subpackage
+-#%_debugsource_packages	1
++%_debugsource_packages	1
+ 
+ # Whether rpm should create extra debuginfo packages for each subpackage
+-#%_debuginfo_subpackages 1
++#_debuginfo_subpackages 1
+ 
+ #
+ # Use internal dependency generator rather than external helpers?
+-- 
+1.8.3-rc3
+

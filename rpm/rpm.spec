@@ -4,7 +4,7 @@
 Summary: The RPM package management system
 Name: rpm
 Version: 4.12.0
-Release: 26
+Release: 1
 Source0: http://rpm.org/releases/rpm-4.9.x/rpm-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch12:	0012-openSUSE-finddebuginfo-patch.patch
@@ -119,7 +119,7 @@ CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
 
-cd src
+cd upstream
 
 ./autogen.sh \
     --prefix=%{_usr} \
@@ -140,7 +140,7 @@ make %{?jobs:-j%jobs}
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cd src
+cd upstream
 %make_install
 
 
@@ -192,9 +192,9 @@ if [ -x "$dbstat" ]; then
 fi
 exit 0
 
-%files -f src/%{name}.lang
+%files -f upstream/%{name}.lang
 %defattr(-,root,root,-)
-%doc src/GROUPS src/COPYING src/CREDITS
+%doc upstream/GROUPS upstream/COPYING upstream/CREDITS
 
 %dir %{_sysconfdir}/rpm
 

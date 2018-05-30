@@ -174,7 +174,7 @@
 
   Package building:
     * Fix %defattr(-) syntax, regression introduced in  (SuseBug:594310)
-    * Fix spec parser eating empty lines in %prep section, regression
+    * Fix spec parser eating empty lines in prep section, regression
       introduced in 4.6.0 (RhBug:573339)
     * Fix NOSOURCE/NOPATCH tag generation of nosrc packages, regression
       introduced in 4.6.0

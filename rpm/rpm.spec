@@ -17,6 +17,7 @@ Patch7:  0007-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Patch8:  0008-Compatibility-with-older-dd.patch
 Patch9:  0009-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch10: 0010-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
+Patch11: 0011-Force-libdir-to-be-lib-until-weve-rebuilt-libzypp.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -118,18 +119,20 @@ that are used to build packages using the RPM Package Manager.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
+_libdir=%{_usr}/lib
 
 ./autogen.sh \
     --prefix=%{_usr} \
     --sysconfdir=%{_sysconfdir} \
     --localstatedir=%{_var} \
     --sharedstatedir=%{_var}/lib \
-    --libdir=%{_libdir} \
+    --libdir=%{_usr}/lib \
     --with-vendor=meego \
     --with-external-db \
 %if %{with python}
@@ -145,7 +148,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %make_install
 
-# HACK: include older .so so we can get everything rebuild properly
+# HACK: include older .so so we can get everything rebuilt properly
 cp -a /%{_libdir}/librpm.so.2.0.2 $RPM_BUILD_ROOT/%{_libdir}/
 cp -a /%{_libdir}/librpm.so.2 $RPM_BUILD_ROOT/%{_libdir}/
 cp -a /%{_libdir}/librpmbuild.so.2.0.1 $RPM_BUILD_ROOT/%{_libdir}/

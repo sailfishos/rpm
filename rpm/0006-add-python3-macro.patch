@@ -1,7 +1,7 @@
 diff -ruN rpm-4.9.1.2-orig/configure.ac rpm-4.9.1.2/configure.ac
 --- rpm-4.9.1.2-orig/configure.ac	2011-09-29 14:15:11.000000000 +0200
 +++ rpm-4.9.1.2/configure.ac	2017-08-23 10:25:17.524644920 +0200
-@@ -128,6 +128,7 @@
+@@ -130,6 +130,7 @@
  AC_PATH_PROG(__PERL, perl, /usr/bin/perl, $MYPATH)
  AC_PATH_PROG(__PGP, pgp, /usr/bin/pgp, $MYPATH)
  AC_PATH_PROG(__PYTHON, python, /usr/bin/python, $MYPATH) 
@@ -12,7 +12,7 @@ diff -ruN rpm-4.9.1.2-orig/configure.ac rpm-4.9.1.2/configure.ac
 diff -ruN rpm-4.9.1.2-orig/macros.in rpm-4.9.1.2/macros.in
 --- rpm-4.9.1.2-orig/macros.in	2011-07-15 11:32:41.000000000 +0200
 +++ rpm-4.9.1.2/macros.in	2017-08-23 10:25:36.804883058 +0200
-@@ -59,6 +59,7 @@
+@@ -51,6 +51,7 @@
  %__patch		@__PATCH@
  %__perl			@__PERL@
  %__python		@__PYTHON@
@@ -20,3 +20,4 @@ diff -ruN rpm-4.9.1.2-orig/macros.in rpm-4.9.1.2/macros.in
  %__restorecon		@__RESTORECON@
  %__rm			@__RM@
  %__rsh			@__RSH@
+

@@ -37,6 +37,8 @@ Patch9:  0009-Compatibility-with-older-dd.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch12: 0012-Force-libdir-to-be-lib-until-weve-rebuilt-libzypp.patch
+Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
+Patch14: 0014-Do-not-use-xargs-d.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -101,6 +103,8 @@ the package like its version, a description, etc.
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
+%patch14 -p1
 
 %build
 CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"

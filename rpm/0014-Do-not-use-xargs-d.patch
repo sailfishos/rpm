@@ -1,0 +1,29 @@
+From ba890df3a4528884771104cb50c33ccc4ba0ffe4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tomi=20Lepp=C3=A4nen?= <tomi.leppanen@jolla.com>
+Date: Fri, 14 Dec 2018 13:18:41 +0200
+Subject: [PATCH 2/2] Do not use xargs -d
+
+Some versions of xargs (like busybox) do not support -d.
+---
+ scripts/find-debuginfo.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/find-debuginfo.sh b/scripts/find-debuginfo.sh
+index a7c2db0f9..9c83030e1 100755
+--- a/scripts/find-debuginfo.sh
++++ b/scripts/find-debuginfo.sh
+@@ -515,9 +515,9 @@ if $run_dwz \
+     fi
+ 
+     # dwz invalidates .gnu_debuglink CRC32 in the main files.
+-    cat "$ELFBINSFILE" |
++    cat "$ELFBINSFILE" | tr '\n' '\0' |
+     (cd "$RPM_BUILD_ROOT"; \
+-     xargs -d '\n' ${lib_rpm_dir}/sepdebugcrcfix usr/lib/debug)
++     xargs -0 ${lib_rpm_dir}/sepdebugcrcfix usr/lib/debug)
+   fi
+ fi
+ 
+-- 
+2.19.2
+

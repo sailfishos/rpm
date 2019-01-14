@@ -108,7 +108,14 @@ Requires: pkgconfig
 %description build
 The rpm-build package contains the scripts and executable programs
 that are used to build packages using the RPM Package Manager.
-#
+
+%package doc
+Summary:  Documentation for %{name}
+Group:    Documentation
+Requires: rpm = %{version}-%{release}
+
+%description doc
+Man pages for %{name}, %{name}-build and %{name}-devel.
 
 %prep
 %setup -q  -n rpm-%{version}/upstream
@@ -191,8 +198,11 @@ do
     touch $RPM_BUILD_ROOT/var/lib/rpm/$dbi
 done
 
-
 %find_lang %{name}
+
+# Move doc files to their directory
+mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
+install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -212,7 +222,7 @@ exit 0
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc COPYING CREDITS README
+%license COPYING
 
 %dir %{_sysconfdir}/rpm
 
@@ -234,23 +244,6 @@ exit 0
 %{_libdir}/rpm-plugins/ima.so
 %{_libdir}/rpm-plugins/prioreset.so
 
-%doc %{_mandir}/man8/rpm.8*
-%doc %{_mandir}/man8/rpm2cpio.8*
-%doc %{_mandir}/man8/rpmdb.8.gz
-%doc %{_mandir}/man8/rpmkeys.8.gz
-%doc %{_mandir}/man8/rpmsign.8.gz
-%doc %{_mandir}/man8/rpmspec.8.gz
-%doc %{_mandir}/man8/rpm-misc.8.gz
-%doc %{_mandir}/man8/rpm-plugin-systemd-inhibit.8.gz
-
-# XXX this places translated manuals to wrong package wrt eg rpmbuild
-%lang(fr) %{_mandir}/fr/man[18]/*.[18]*
-%lang(ko) %{_mandir}/ko/man[18]/*.[18]*
-%lang(ja) %{_mandir}/ja/man[18]/*.[18]*
-%lang(pl) %{_mandir}/pl/man[18]/*.[18]*
-%lang(ru) %{_mandir}/ru/man[18]/*.[18]*
-%lang(sk) %{_mandir}/sk/man[18]/*.[18]*
-
 %{_libdir}/rpm/macros
 %{_libdir}/rpm/rpmpopt*
 %{_libdir}/rpm/rpmrc
@@ -271,7 +264,6 @@ exit 0
 %defattr(-,root,root)
 %{_bindir}/rpmbuild
 %{_bindir}/gendiff
-%{_mandir}/man1/gendiff.1*
 
 %{_libdir}/rpm/fileattrs/*.attr
 %{_libdir}/rpm/script.req
@@ -313,14 +305,38 @@ exit 0
 %{_libdir}/rpm/pythondistdeps.pyo
 %{_libdir}/rpm/sepdebugcrcfix
 
-%{_mandir}/man8/rpmbuild.8*
-%{_mandir}/man8/rpmdeps.8*
-
 
 %files devel
 %defattr(-,root,root)
 %{_includedir}/rpm
 %{_libdir}/librp*[a-z].so
-%{_mandir}/man8/rpmgraph.8*
 %{_bindir}/rpmgraph
 %{_libdir}/pkgconfig/rpm.pc
+
+
+%files doc
+%defattr(-, root, root)
+%doc %{_docdir}/%{name}-%{version}
+
+%{_mandir}/man8/rpm.8*
+%{_mandir}/man8/rpm2cpio.8*
+%{_mandir}/man8/rpmdb.8.gz
+%{_mandir}/man8/rpmkeys.8.gz
+%{_mandir}/man8/rpmsign.8.gz
+%{_mandir}/man8/rpmspec.8.gz
+%{_mandir}/man8/rpm-misc.8.gz
+%{_mandir}/man8/rpm-plugin-systemd-inhibit.8.gz
+
+# XXX this places translated manuals to wrong package wrt eg rpmbuild
+%lang(fr) %{_mandir}/fr/man[18]/*.[18]*
+%lang(ko) %{_mandir}/ko/man[18]/*.[18]*
+%lang(ja) %{_mandir}/ja/man[18]/*.[18]*
+%lang(pl) %{_mandir}/pl/man[18]/*.[18]*
+%lang(ru) %{_mandir}/ru/man[18]/*.[18]*
+%lang(sk) %{_mandir}/sk/man[18]/*.[18]*
+
+%{_mandir}/man1/gendiff.1*
+%{_mandir}/man8/rpmbuild.8*
+%{_mandir}/man8/rpmdeps.8*
+
+%{_mandir}/man8/rpmgraph.8*

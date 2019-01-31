@@ -28,7 +28,7 @@ index d086248..73f8359 100644
  
  #
  # Should binaries in noarch packages terminate a build?
-@@ -522,7 +523,7 @@ package or when debugging this package.\
+@@ -522,14 +523,14 @@ package or when debugging this package.\
  #   Same as for "separate" but if the __debug_package global is set then
  #   the -debuginfo package will have a compatibility link for the main
  #   ELF /usr/lib/debug/.build-id/xx/yyy -> /usr/lib/.build-id/xx/yyy
@@ -37,6 +37,14 @@ index d086248..73f8359 100644
  
  # Whether build-ids should be made unique between package version/releases
  # when generating debuginfo packages. If set to 1 this will pass
+ # --build-id-seed "%{VERSION}-%{RELEASE}" to find-debuginfo.sh which will
+ # pass it onto debugedit --build-id-seed to be used to prime the build-id
+ # note hash.
+-%_unique_build_ids	1
++%_unique_build_ids	0
+ 
+ # Do not recompute build-ids but keep whatever is in the ELF file already.
+ # Cannot be used together with _unique_build_ids (which forces recomputation).
 @@ -551,10 +552,10 @@ package or when debugging this package.\
  %_unique_debug_srcs	1
  

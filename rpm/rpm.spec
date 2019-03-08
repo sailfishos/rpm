@@ -35,6 +35,7 @@ License: GPLv2+
 Requires: curl
 Requires: coreutils
 Requires: db4-utils
+Requires: openssl-libs
 BuildRequires: db4-devel
 
 BuildRequires: meego-rpm-config
@@ -45,7 +46,7 @@ BuildRequires: gawk
 BuildRequires: elfutils-devel >= 0.112
 BuildRequires: elfutils-libelf-devel
 BuildRequires: readline-devel zlib-devel
-BuildRequires: nss-devel
+BuildRequires: openssl-devel
 # The popt version here just documents an older known-good version
 BuildRequires: popt-devel >= 1.10.2
 BuildRequires: file-devel
@@ -135,7 +136,6 @@ Man pages for %{name}, %{name}-build and %{name}-devel.
 %patch14 -p1
 
 %build
-CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
 _libdir=%{_usr}/lib
@@ -148,6 +148,7 @@ _libdir=%{_usr}/lib
     --libdir=%{_usr}/lib \
     --with-vendor=meego \
     --with-external-db \
+    --with-crypto=openssl \
 %if %{with python}
     --enable-python \
 %endif
@@ -160,16 +161,6 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 %make_install
-
-# HACK: include older .so so we can get everything rebuilt properly
-cp -a /%{_libdir}/librpm.so.2.0.2 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpm.so.2 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpmbuild.so.2.0.1 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpmbuild.so.2 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpmio.so.2.0.1 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpmio.so.2 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpmsign.so.0.0.1 $RPM_BUILD_ROOT/%{_libdir}/
-cp -a /%{_libdir}/librpmsign.so.0 $RPM_BUILD_ROOT/%{_libdir}/
 
 #sed "s/i386/arm/g" platform > platform.arm
 #sed "s/i386/mipsel/g" platform > platform.mipsel

@@ -51,6 +51,7 @@ License: GPLv2+
 ##END_OF_INCLUDE_IN_PYTHON_SPEC##
 Requires: coreutils
 Requires: db4-utils
+Requires: openssl-libs
 Requires: popt >= 1.10.2.1
 Requires: curl
 Requires: rpm = %{version}
@@ -68,7 +69,7 @@ BuildRequires: gawk
 BuildRequires: elfutils-devel >= 0.112
 BuildRequires: elfutils-libelf-devel
 BuildRequires: readline-devel zlib-devel
-BuildRequires: nss-devel
+BuildRequires: openssl-devel
 # The popt version here just documents an older known-good version
 BuildRequires: popt-devel >= 1.10.2
 BuildRequires: file-devel
@@ -107,7 +108,6 @@ the package like its version, a description, etc.
 %patch14 -p1
 
 %build
-CPPFLAGS="$CPPFLAGS `pkg-config --cflags nss`"
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
 
@@ -119,6 +119,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --libdir=%{_libdir} \
     --with-vendor=meego \
     --with-external-db \
+    --with-crypto=openssl \
 %if %{with python}
     --enable-python \
 %endif

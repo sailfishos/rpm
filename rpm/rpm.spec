@@ -45,7 +45,7 @@ BuildRequires: libtool
 BuildRequires: gawk
 BuildRequires: elfutils-devel >= 0.112
 BuildRequires: elfutils-libelf-devel
-BuildRequires: readline-devel zlib-devel
+BuildRequires: zlib-devel
 BuildRequires: openssl-devel
 # The popt version here just documents an older known-good version
 BuildRequires: popt-devel >= 1.10.2

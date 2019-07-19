@@ -35,9 +35,9 @@ License: GPLv2+
 Requires: curl
 Requires: coreutils
 Requires: db4-utils
+Requires: liblua
 Requires: openssl-libs
 BuildRequires: db4-devel
-
 BuildRequires: meego-rpm-config
 BuildRequires: autoconf
 BuildRequires: automake
@@ -54,7 +54,7 @@ BuildRequires: gettext-devel
 BuildRequires: cvs
 BuildRequires: ncurses-devel
 BuildRequires: bzip2-devel >= 0.9.0c-2
-BuildRequires: lua-devel >= 5.1
+BuildRequires: lua-devel
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
@@ -62,12 +62,16 @@ BuildRequires: python
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
+Provides:      rpm-libs = %{version}-%{release}
+Obsoletes:     rpm-libs < %{version}-%{release}
+
 %description
 The RPM Package Manager (RPM) is a powerful command line driven
 package management system capable of installing, uninstalling,
 verifying, querying, and updating software packages. Each software
 package consists of an archive of files along with information about
 the package like its version, a description, etc.
+This package also contains the RPM shared libraries.
 
 %package libs
 Summary:  Libraries for manipulating RPM packages
@@ -76,7 +80,7 @@ License: GPLv2+ and LGPLv2+ with exceptions
 Requires: rpm = %{version}-%{release}
 
 %description libs
-This package contains the RPM shared libraries.
+This is an empty transitional package.
 
 %package devel
 Summary:  Development files for manipulating RPM packages
@@ -194,12 +198,14 @@ done
 # Move doc files to their directory
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
 install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
+echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
+chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %posttrans
 # XXX this is klunky and ugly, rpm itself should handle this
@@ -247,8 +253,6 @@ exit 0
 
 %{_libdir}/rpm/platform
 
-%files libs
-%defattr(-,root,root)
 %{_libdir}/librpm*.so.*
 
 %files build
@@ -331,3 +335,7 @@ exit 0
 %{_mandir}/man8/rpmdeps.8*
 
 %{_mandir}/man8/rpmgraph.8*
+
+%files libs
+%defattr(-,root,root)
+%doc %{_docdir}/%{name}-%{version}/README.rpm-libs

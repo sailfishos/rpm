@@ -51,7 +51,6 @@ BuildRequires: openssl-devel
 BuildRequires: popt-devel >= 1.10.2
 BuildRequires: file-devel
 BuildRequires: gettext-devel
-BuildRequires: cvs
 BuildRequires: ncurses-devel
 BuildRequires: bzip2-devel >= 0.9.0c-2
 BuildRequires: lua-devel

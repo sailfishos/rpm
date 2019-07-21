@@ -168,9 +168,8 @@ rm -rf $RPM_BUILD_ROOT
 #sed "s/i386/arm/g" platform > platform.arm
 #sed "s/i386/mipsel/g" platform > platform.mipsel
 
-#DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.arm arm %{_vendor} linux -gnueabi
-#DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.mipsel mipsel %{_vendor} linux -gnu
-
+#DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.arm arm %%{_vendor} linux -gnueabi
+#DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.mipsel mipsel %%{_vendor} linux -gnu
 
 find %{buildroot} -regex ".*\\.la$" | xargs rm -f -- 
 
@@ -232,7 +231,6 @@ exit 0
 %{_bindir}/rpmspec
 %{_bindir}/rpm2cpio
 %{_bindir}/rpmdb
-%{_bindir}/rpmsign
 %{_bindir}/rpmquery
 %{_bindir}/rpmverify
 %{_bindir}/rpm2archive
@@ -252,7 +250,9 @@ exit 0
 
 %{_libdir}/rpm/platform
 
-%{_libdir}/librpm*.so.*
+%{_libdir}/librpmbuild.so.*
+%{_libdir}/librpmio.so.*
+%{_libdir}/librpm.so.*
 
 %files build
 %defattr(-,root,root)
@@ -316,7 +316,6 @@ exit 0
 %{_mandir}/man8/rpm2cpio.8*
 %{_mandir}/man8/rpmdb.8.gz
 %{_mandir}/man8/rpmkeys.8.gz
-%{_mandir}/man8/rpmsign.8.gz
 %{_mandir}/man8/rpmspec.8.gz
 %{_mandir}/man8/rpm-misc.8.gz
 %{_mandir}/man8/rpm-plugin-systemd-inhibit.8.gz
@@ -338,3 +337,20 @@ exit 0
 %files libs
 %defattr(-,root,root)
 %doc %{_docdir}/%{name}-%{version}/README.rpm-libs
+
+%package sign
+Summary:   Package signing support
+License:   GPLv2+ and LGPLv2+ with exceptions
+Requires:  rpm  = %{version}-%{release}
+Requires:  %{_bindir}/gpg2
+
+%description sign
+This package contains support for digitally signing RPM packages.
+
+%files sign
+%{_bindir}/rpmsign
+%{_mandir}/man8/rpmsign.8*
+%{_libdir}/librpmsign.so.*
+
+%post sign -p /sbin/ldconfig
+%postun sign -p /sbin/ldconfig

@@ -222,7 +222,7 @@ exit 0
 %dir %{_sysconfdir}/rpm
 
 %attr(0755, root, root)   %dir /var/lib/rpm
-%attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok,noreplace) /var/lib/rpm/*
+%attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok) /var/lib/rpm/*
 %attr(0755, root, root) %dir %{_libdir}/rpm
 
 /bin/rpm

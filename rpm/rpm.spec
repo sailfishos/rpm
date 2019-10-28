@@ -179,7 +179,6 @@ mkdir -p $RPM_BUILD_ROOT/bin
 install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/libsymlink.attr
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
-ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
 for dbi in \
     Basenames Conflictname Dirnames Group Installtid Name Packages \
@@ -199,8 +198,6 @@ install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -225,7 +222,6 @@ exit 0
 %attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok) /var/lib/rpm/*
 %attr(0755, root, root) %dir %{_libdir}/rpm
 
-/bin/rpm
 %{_bindir}/rpm
 %{_bindir}/rpmkeys
 %{_bindir}/rpmspec
@@ -238,6 +234,7 @@ exit 0
 %{_libdir}/rpm-plugins/ima.so
 %{_libdir}/rpm-plugins/prioreset.so
 
+%dir %{_libdir}/rpm-plugins
 %{_libdir}/rpm/macros
 %{_libdir}/rpm/rpmpopt*
 %{_libdir}/rpm/rpmrc

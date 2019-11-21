@@ -1,6 +1,8 @@
 # run internal testsuite?
 %bcond_without check
 
+%define rpmhome /usr/lib/rpm
+
 Summary: The RPM package management system
 Name: rpm
 Version: 4.14.1
@@ -18,7 +20,6 @@ Patch8:  0008-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Patch9:  0009-Compatibility-with-older-dd.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
-Patch12: 0012-Force-libdir-to-be-lib-until-weve-rebuilt-libzypp.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
 Patch14: 0014-Do-not-use-xargs-d.patch
 Patch15: 0015-Compatibility-with-busybox-diff.patch
@@ -135,7 +136,6 @@ Man pages for %{name}, %{name}-build and %{name}-devel.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-%patch12 -p1
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
@@ -143,14 +143,13 @@ Man pages for %{name}, %{name}-build and %{name}-devel.
 %build
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
-_libdir=%{_usr}/lib
 
 ./autogen.sh \
     --prefix=%{_usr} \
     --sysconfdir=%{_sysconfdir} \
     --localstatedir=%{_var} \
     --sharedstatedir=%{_var}/lib \
-    --libdir=%{_usr}/lib \
+    --libdir=%{_libdir} \
     --with-vendor=meego \
     --with-external-db \
     --with-crypto=openssl \
@@ -176,10 +175,12 @@ rm -rf $RPM_BUILD_ROOT
 find %{buildroot} -regex ".*\\.la$" | xargs rm -f -- 
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/rpm
+mkdir -p $RPM_BUILD_ROOT%{rpmhome}/macros.d
 mkdir -p $RPM_BUILD_ROOT/bin
-install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/libsymlink.attr
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/rpm/fileattrs/ksyms.attr
+mkdir -p $RPM_BUILD_ROOT%{rpmhome}/rpm/fileattrs
+
+install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{rpmhome}/fileattrs/libsymlink.attr
+rm -f ${RPM_BUILD_ROOT}%{rpmhome}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
@@ -195,6 +196,11 @@ done
 
 %find_lang %{name}
 
+find $RPM_BUILD_ROOT -name "*.la"|xargs rm -f
+
+# Remove php macro as we don't use php
+rm -f $RPM_BUILD_ROOT/%{rpmhome}/macros.php
+
 # Move doc files to their directory
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
 install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
@@ -209,7 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %posttrans
 # XXX this is klunky and ugly, rpm itself should handle this
-dbstat=/usr/lib/rpm/rpmdb_stat
+dbstat=%{rpmhome}/rpmdb_stat
 if [ -x "$dbstat" ]; then
     if "$dbstat" -e -h /var/lib/rpm 2>&1 | grep -q "doesn't match environment version \| Invalid argument"; then
         rm -f /var/lib/rpm/__db.* 
@@ -225,7 +231,7 @@ exit 0
 
 %attr(0755, root, root)   %dir /var/lib/rpm
 %attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok) /var/lib/rpm/*
-%attr(0755, root, root) %dir %{_libdir}/rpm
+%attr(0755, root, root) %dir %{rpmhome}
 
 /bin/rpm
 %{_bindir}/rpm
@@ -240,66 +246,47 @@ exit 0
 %{_libdir}/rpm-plugins/ima.so
 %{_libdir}/rpm-plugins/prioreset.so
 
-%{_libdir}/rpm/macros
-%{_libdir}/rpm/rpmpopt*
-%{_libdir}/rpm/rpmrc
+%attr(0755, root, root) %dir %{rpmhome}
 
-%{_libdir}/rpm/rpmdb_*
-%{_libdir}/rpm/rpm.daily
-%{_libdir}/rpm/rpm.log
-%{_libdir}/rpm/rpm2cpio.sh
-%{_libdir}/rpm/tgpg
+%{rpmhome}/macros
+%{rpmhome}/macros.*
+%{rpmhome}/macros.d
+%{rpmhome}/rpmpopt*
+%{rpmhome}/rpmrc
+%{rpmhome}/rpmdb_*
+%{rpmhome}/rpm.daily
+%{rpmhome}/rpm.log
+%{rpmhome}/rpm.supp
+%{rpmhome}/rpm2cpio.sh
+%{rpmhome}/tgpg
+%{rpmhome}/platform
+%{rpmhome}/python-macro-helper
 
-%{_libdir}/rpm/platform
+%dir %{rpmhome}/fileattrs
 
 %{_libdir}/librpmbuild.so.*
 %{_libdir}/librpmio.so.*
 %{_libdir}/librpm.so.*
 
 %files build
-%defattr(-,root,root)
 %{_bindir}/rpmbuild
 %{_bindir}/gendiff
+%{_bindir}/rpmspec
 
-%{_libdir}/rpm/fileattrs/*.attr
-%{_libdir}/rpm/script.req
-%{_libdir}/rpm/elfdeps
-%{_libdir}/rpm/brp-*
-%{_libdir}/rpm/check-buildroot
-%{_libdir}/rpm/check-files
-%{_libdir}/rpm/check-prereqs
-%{_libdir}/rpm/check-rpaths*
-%{_libdir}/rpm/debugedit
-%{_libdir}/rpm/find-debuginfo.sh
-%{_libdir}/rpm/find-lang.sh
-%{_libdir}/rpm/find-provides
-%{_libdir}/rpm/find-requires
-%{_libdir}/rpm/mono-find-provides
-%{_libdir}/rpm/mono-find-requires
-%{_libdir}/rpm/ocaml-find-provides.sh
-%{_libdir}/rpm/ocaml-find-requires.sh
-%{_libdir}/rpm/libtooldeps.sh
-%{_libdir}/rpm/pkgconfigdeps.sh
-%{_libdir}/rpm/perl.prov
-%{_libdir}/rpm/perl.req
-%{_libdir}/rpm/pythondeps.sh
-%{_libdir}/rpm/rpmdeps
-%{_libdir}/rpm/config.guess
-%{_libdir}/rpm/config.sub
-%{_libdir}/rpm/mkinstalldirs
-%{_libdir}/rpm/desktop-file.prov
-%{_libdir}/rpm/fontconfig.prov
-%{_libdir}/rpm/macros.perl
-%{_libdir}/rpm/macros.python
-%{_libdir}/rpm/macros.php
-%{_libdir}/rpm/rpm.supp
-%{_libdir}/rpm/debuginfo.prov
-%{_libdir}/rpm/metainfo.prov
-%{_libdir}/rpm/python-macro-helper
-%{_libdir}/rpm/pythondistdeps.py
-%{_libdir}/rpm/pythondistdeps.pyc
-%{_libdir}/rpm/pythondistdeps.pyo
-%{_libdir}/rpm/sepdebugcrcfix
+%{rpmhome}/brp-*
+%{rpmhome}/check-*
+%{rpmhome}/debugedit
+%{rpmhome}/sepdebugcrcfix
+%{rpmhome}/find-debuginfo.sh
+%{rpmhome}/find-lang.sh
+%{rpmhome}/*provides*
+%{rpmhome}/*requires*
+%{rpmhome}/*deps*
+%{rpmhome}/*.prov
+%{rpmhome}/*.req
+%{rpmhome}/config.*
+%{rpmhome}/mkinstalldirs
+%{rpmhome}/fileattrs/*
 
 
 %files devel

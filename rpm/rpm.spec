@@ -149,6 +149,7 @@ export CPPFLAGS CFLAGS LDFLAGS
 echo $LDFLAGS
 echo $LD_LIBRARY_PATH
 export
+set -x
 
 ./autogen.sh \
     --prefix=%{_usr} \

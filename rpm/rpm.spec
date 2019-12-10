@@ -147,6 +147,7 @@ export CPPFLAGS CFLAGS LDFLAGS LD_LIBRARY_PATH
 # xfade debug
 echo $LDFLAGS
 echo $LD_LIBRARY_PATH
+export
 
 ./autogen.sh \
     --prefix=%{_usr} \

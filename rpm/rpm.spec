@@ -142,7 +142,11 @@ Man pages for %{name}, %{name}-build and %{name}-devel.
 
 %build
 CFLAGS="$RPM_OPT_FLAGS"
-export CPPFLAGS CFLAGS LDFLAGS
+export CPPFLAGS CFLAGS LDFLAGS LD_LIBRARY_PATH
+
+# xfade debug
+echo LDFLAGS
+echo LD_LIBRARY_PATH
 
 ./autogen.sh \
     --prefix=%{_usr} \

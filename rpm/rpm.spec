@@ -143,6 +143,7 @@ Man pages for %{name}, %{name}-build and %{name}-devel.
 %build
 CFLAGS="$RPM_OPT_FLAGS"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
+export LDFLAGS='-L/usr/lib64/'
 export CPPFLAGS CFLAGS LDFLAGS
 
 # xfade debug

@@ -151,6 +151,7 @@ echo $LDFLAGS
 echo $LD_LIBRARY_PATH
 export
 set -x
+cat /usr/lib64/pkgconfig/libcrypto.pc
 
 ./autogen.sh \
     --prefix=%{_usr} \

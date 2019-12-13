@@ -157,7 +157,23 @@ export CFLAGS
 export LDFLAGS
 autoreconf -i
 
+sed -i 's/^\#\!\ \/bin\/sh/\#\!\ \/bin\/sh\nset\ \-x/g' configure
 cat configure
+
+./configure \
+    --prefix=%{_usr} \
+    --sysconfdir=%{_sysconfdir} \
+    --localstatedir=%{_var} \
+    --sharedstatedir=%{_var}/lib \
+    --libdir=%{_libdir} \
+    --with-vendor=meego \
+    --with-external-db \
+    --with-crypto=openssl \
+%if %{with python}
+    --enable-python \
+%endif
+    --with-lua \
+    --with-cap
 
 # xfade debug end
 

@@ -155,10 +155,13 @@ cat /usr/lib64/pkgconfig/libcrypto.pc
 export CPPFLAGS
 export CFLAGS
 export LDFLAGS
+ldconfig
+ldconfig -p
 autoreconf -i
 
 #sed -i 's/^\#\!\ \/bin\/sh/\#\!\ \/bin\/sh\nset\ \-x/g' configure
 #cat configure
+
 
 ./configure \
     --prefix=%{_usr} \

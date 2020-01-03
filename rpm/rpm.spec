@@ -162,6 +162,7 @@ autoreconf -i
 #sed -i 's/^\#\!\ \/bin\/sh/\#\!\ \/bin\/sh\nset\ \-x/g' configure
 #cat configure
 
+export LDFLAGS='-L/usr/lib64/ -L/usr/lib/'
 
 ./configure \
     --prefix=%{_usr} \

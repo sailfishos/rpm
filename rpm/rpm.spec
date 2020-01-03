@@ -163,6 +163,7 @@ autoreconf -i
 #cat configure
 
 export LDFLAGS='-L/usr/lib64/ -L/usr/lib/'
+export LIBRARY_PATH='/usr/lib64:/usr/lib'
 
 ./configure \
     --prefix=%{_usr} \

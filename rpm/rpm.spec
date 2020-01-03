@@ -168,7 +168,7 @@ cat configure
     --libdir=%{_libdir} \
     --with-vendor=meego \
     --with-external-db \
-    --with-crypto=openssl \
+    --without-crypto \
 %if %{with python}
     --enable-python \
 %endif

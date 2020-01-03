@@ -157,8 +157,8 @@ export CFLAGS
 export LDFLAGS
 autoreconf -i
 
-sed -i 's/^\#\!\ \/bin\/sh/\#\!\ \/bin\/sh\nset\ \-x/g' configure
-cat configure
+#sed -i 's/^\#\!\ \/bin\/sh/\#\!\ \/bin\/sh\nset\ \-x/g' configure
+#cat configure
 
 ./configure \
     --prefix=%{_usr} \
@@ -186,7 +186,7 @@ cat configure
     --libdir=%{_libdir} \
     --with-vendor=meego \
     --with-external-db \
-    --with-crypto=openssl \
+    --without-crypto \
 %if %{with python}
     --enable-python \
 %endif

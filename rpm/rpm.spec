@@ -56,7 +56,6 @@ BuildRequires: lua-devel
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
-BuildRequires: python3-base
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 

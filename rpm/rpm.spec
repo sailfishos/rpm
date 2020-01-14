@@ -1,6 +1,3 @@
-# run internal testsuite?
-%bcond_without check
-
 %define rpmhome /usr/lib/rpm
 
 Summary: The RPM package management system

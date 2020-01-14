@@ -1,17 +1,8 @@
-# build against xz?
-%bcond_without xz
-# build against python
-%bcond_without python
-# sqlite backend is pretty useless
-%bcond_with sqlite
-# just for giggles, option to build with internal Berkeley DB
-%bcond_with int_bdb
-
 %define rpmhome /usr/lib/rpm
 
 %define rpmver 4.14.1
 
-%global py_ver %(python2 -c 'import sys; print sys.version[:3]')
+%global py_ver %(python3 -c 'import sys; print(sys.version[:3])')
 
 %define py_libdir %{_libdir}/python%{py_ver}
 
@@ -21,7 +12,7 @@ Summary: The RPM package management system
 Name: rpm-python
 Version: 4.14.1
 Release: 1
-BuildRequires: python-devel
+BuildRequires: python3-devel
 # Up to END_OF_INCLUDE_IN_PYTHON_SPEC lines are from the main spec file
 Source0: http://rpm.org/releases/%{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
@@ -118,9 +109,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-vendor=meego \
     --with-external-db \
     --with-crypto=openssl \
-%if %{with python}
     --enable-python \
-%endif
     --with-lua \
     --with-cap  
 

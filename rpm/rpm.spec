@@ -249,7 +249,6 @@ exit 0
 %attr(0755, root, root) %dir %{rpmhome}
 
 %{rpmhome}/macros
-%{rpmhome}/macros.*
 %{rpmhome}/macros.d
 %{rpmhome}/rpmpopt*
 %{rpmhome}/rpmrc
@@ -286,6 +285,7 @@ exit 0
 %{rpmhome}/*.req
 %{rpmhome}/config.*
 %{rpmhome}/mkinstalldirs
+%{rpmhome}/macros.p*
 %{rpmhome}/fileattrs/*
 
 

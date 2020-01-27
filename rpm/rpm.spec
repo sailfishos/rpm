@@ -1,6 +1,3 @@
-# run internal testsuite?
-%bcond_without check
-
 %define rpmhome /usr/lib/rpm
 
 Summary: The RPM package management system
@@ -59,7 +56,6 @@ BuildRequires: lua-devel
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
-BuildRequires: python
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -124,21 +120,7 @@ Requires: rpm = %{version}-%{release}
 Man pages for %{name}, %{name}-build and %{name}-devel.
 
 %prep
-%setup -q  -n rpm-%{version}/upstream
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
+%autosetup  -n rpm-%{version}/upstream -p1
 
 %build
 CFLAGS="$RPM_OPT_FLAGS"
@@ -153,9 +135,6 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-vendor=meego \
     --with-external-db \
     --with-crypto=openssl \
-%if %{with python}
-    --enable-python \
-%endif
     --with-lua \
     --with-cap  
 
@@ -287,7 +266,6 @@ exit 0
 %{rpmhome}/mkinstalldirs
 %{rpmhome}/macros.p*
 %{rpmhome}/fileattrs/*
-
 
 %files devel
 %defattr(-,root,root)

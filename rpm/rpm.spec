@@ -20,11 +20,8 @@ Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
 Patch14: 0014-Do-not-use-xargs-d.patch
 Patch15: 0015-Compatibility-with-busybox-diff.patch
-Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
-
-
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD 
@@ -72,7 +69,6 @@ This package also contains the RPM shared libraries.
 
 %package libs
 Summary:  Libraries for manipulating RPM packages
-Group: Development/Libraries
 License: GPLv2+ and LGPLv2+ with exceptions
 Requires: rpm = %{version}-%{release}
 
@@ -81,7 +77,6 @@ This is an empty transitional package.
 
 %package devel
 Summary:  Development files for manipulating RPM packages
-Group: Development/Libraries
 License: GPLv2+ and LGPLv2+ with exceptions
 Requires: rpm = %{version}-%{release}
 Requires: file-devel
@@ -100,7 +95,6 @@ will manipulate RPM packages and databases.
 
 %package build
 Summary: Scripts and executable programs used to build packages
-Group: Development/Tools
 Requires: rpm = %{version}-%{release}
 Requires: elfutils >= 0.128 binutils
 Requires: findutils sed grep gawk diffutils file patch >= 2.5
@@ -113,7 +107,6 @@ that are used to build packages using the RPM Package Manager.
 
 %package doc
 Summary:  Documentation for %{name}
-Group:    Documentation
 Requires: rpm = %{version}-%{release}
 
 %description doc
@@ -185,6 +178,10 @@ mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
 install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1538657
+head -n1 $RPM_BUILD_ROOT/%{rpmhome}/python-macro-helper | grep -E '^#!/usr/bin/' && sed -i '1d' $RPM_BUILD_ROOT/%{rpmhome}/python-macro-helper
+chmod -x $RPM_BUILD_ROOT/%{rpmhome}/python-macro-helper
 
 %clean
 rm -rf $RPM_BUILD_ROOT

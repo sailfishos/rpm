@@ -1,0 +1,25 @@
+From f6b37e52dabc4cc2060bfbf12ee3a5a2aa2d35c9 Mon Sep 17 00:00:00 2001
+From: Niels Breet <niels.breet@jolla.com>
+Date: Mon, 13 Jan 2020 15:50:34 +0200
+Subject: [PATCH] Tune arm opt flags
+
+---
+ rpmrc.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/rpmrc.in b/rpmrc.in
+index 5fe289c..6b98c38 100644
+--- a/rpmrc.in
++++ b/rpmrc.in
+@@ -79,7 +79,7 @@ optflags: armv6hl -O2 -g -march=armv6 -mfloat-abi=hard -mfpu=vfp
+ 
+ optflags: armv7l -O2 -g -march=armv7
+ optflags: armv7hl -O2 -g -march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16
+-optflags: armv7hnl -O2 -g -march=armv7-a -mfloat-abi=hard -mfpu=neon
++optflags: armv7hnl -O2 -g -march=armv7-a+neon-vfpv4 -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a15 -mabi=aapcs-linux
+ 
+ optflags: m68k -O2 -g -fomit-frame-pointer
+ 
+-- 
+1.9.1
+

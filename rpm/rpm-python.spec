@@ -39,7 +39,8 @@ Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
 Patch14: 0014-Do-not-use-xargs-d.patch
 Patch15: 0015-Compatibility-with-busybox-diff.patch
-Patch16: 0017-rpmsign-Close-file-before-replacing.patch
+Patch16: 0016-Tune-arm-opt-flags.patch
+Patch17: 0017-rpmsign-Close-file-before-replacing.patch
 Group: System/Base
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
@@ -90,22 +91,7 @@ the package like its version, a description, etc.
 
 %prep
 # prep and build sections are from the main spec file
-%setup -q  -n %{name}-%{version}/upstream
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
+%autosetup  -n rpm-python-%{version}/upstream -p1
 
 %build
 CFLAGS="$RPM_OPT_FLAGS"

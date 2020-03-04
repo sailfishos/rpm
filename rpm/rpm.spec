@@ -20,6 +20,7 @@ Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
 Patch14: 0014-Do-not-use-xargs-d.patch
 Patch15: 0015-Compatibility-with-busybox-diff.patch
+Patch16: 0016-Tune-arm-opt-flags.patch
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
 

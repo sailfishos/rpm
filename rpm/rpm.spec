@@ -174,6 +174,11 @@ find $RPM_BUILD_ROOT -name "*.la"|xargs rm -f
 # Remove php macro as we don't use php
 rm -f $RPM_BUILD_ROOT/%{rpmhome}/macros.php
 
+# These live in python-rpm-generators now
+# https://bugzilla.redhat.com/show_bug.cgi?id=1410631
+rm -f $RPM_BUILD_ROOT/%{rpmhome}/pythond*
+rm -f $RPM_BUILD_ROOT/%{_fileattrsdir}/python*
+
 # Move doc files to their directory
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
 install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README

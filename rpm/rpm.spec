@@ -30,7 +30,7 @@ License: GPLv2+
 ##END_OF_INCLUDE_IN_PYTHON_SPEC##
 
 Requires: curl
-Requires: coreutils
+Requires: gnu-coreutils
 Requires: db4-utils
 Requires: liblua
 Requires: openssl-libs

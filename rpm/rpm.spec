@@ -21,6 +21,7 @@ Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
 Patch14: 0014-Do-not-use-xargs-d.patch
 Patch15: 0015-Compatibility-with-busybox-diff.patch
 Patch17: 0017-rpmsign-Close-file-before-replacing.patch
+Patch18: 0018-include-plugin-header.patch
 Url: http://www.rpm.org/
 # See also https://github.com/mer-packages/rpm/
 

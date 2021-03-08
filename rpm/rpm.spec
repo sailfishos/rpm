@@ -219,7 +219,6 @@ exit 0
 /bin/rpm
 %{_bindir}/rpm
 %{_bindir}/rpmkeys
-%{_bindir}/rpmspec
 %{_bindir}/rpm2cpio
 %{_bindir}/rpmdb
 %{_bindir}/rpmquery
@@ -246,7 +245,6 @@ exit 0
 
 %dir %{rpmhome}/fileattrs
 
-%{_libdir}/librpmbuild.so.*
 %{_libdir}/librpmio.so.*
 %{_libdir}/librpm.so.*
 
@@ -254,6 +252,8 @@ exit 0
 %{_bindir}/rpmbuild
 %{_bindir}/gendiff
 %{_bindir}/rpmspec
+
+%{_libdir}/librpmbuild.so.*
 
 %{rpmhome}/brp-*
 %{rpmhome}/check-*

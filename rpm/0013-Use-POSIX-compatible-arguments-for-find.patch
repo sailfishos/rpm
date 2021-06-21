@@ -1,9 +1,11 @@
-From 4726732a41e68225343e27975fa5506b4b08b2fb Mon Sep 17 00:00:00 2001
+From e197fc23a6de2798d0d3fdae02acaee30e9a45de Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Tomi=20Lepp=C3=A4nen?= <tomi.leppanen@jolla.com>
 Date: Fri, 14 Dec 2018 12:08:19 +0200
-Subject: [PATCH 1/2] Use POSIX compatible arguments for find
+Subject: [PATCH] Use POSIX compatible arguments for find
 
 Arguments -or and -not are GNU extensions.
+
+Signed-off-by: Marko Saukko <marko.saukko@jolla.com>
 ---
  scripts/brp-python-hardlink    | 2 +-
  scripts/brp-strip              | 2 +-
@@ -11,7 +13,7 @@ Arguments -or and -not are GNU extensions.
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/scripts/brp-python-hardlink b/scripts/brp-python-hardlink
-index 949c9c32d..d57d7cb1d 100755
+index 5fd1b43bb..b24432c92 100755
 --- a/scripts/brp-python-hardlink
 +++ b/scripts/brp-python-hardlink
 @@ -15,7 +15,7 @@ hardlink_if_same() {
@@ -24,20 +26,18 @@ index 949c9c32d..d57d7cb1d 100755
  	o1pyc="${pyc%pyc}opt-1.pyc"
  	hardlink_if_same "$pyc" "$o1pyc"
 diff --git a/scripts/brp-strip b/scripts/brp-strip
-index 5e645669c..afd8c46f6 100755
+index c3484fe3c..c5d3f2f3e 100755
 --- a/scripts/brp-strip
 +++ b/scripts/brp-strip
-@@ -12,7 +12,7 @@ Darwin*) exit 0 ;;
+@@ -13,5 +13,5 @@ Darwin*) exit 0 ;;
  esac
  
  # Strip ELF binaries
--for f in `find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -or -perm -0010 -or -perm -0001 \) -exec file {} \; | \
-+for f in `find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -o -perm -0010 -o -perm -0001 \) -exec file {} \; | \
-         grep -v "^${RPM_BUILD_ROOT}/\?usr/lib/debug"  | \
- 	grep -v ' shared object,' | \
- 	sed -n -e 's/^\(.*\):[ 	]*ELF.*, not stripped.*/\1/p'`; do
+-find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -or -perm -0010 -or -perm -0001 \) \! -regex "${RPM_BUILD_ROOT}/*usr/lib/debug.*" -print0 | \
++find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -o -perm -0010 -o -perm -0001 \) \! -regex "${RPM_BUILD_ROOT}/*usr/lib/debug.*" -print0 | \
+     xargs -0 -r -P$NCPUS -n32 sh -c "file \"\$@\" | grep -v ' shared object,' | sed -n -e 's/^\(.*\):[ 	]*ELF.*, not stripped.*/\1/p' | xargs -I\{\} $STRIP -g \{\}" ARG0
 diff --git a/scripts/brp-strip-comment-note b/scripts/brp-strip-comment-note
-index 833ac78e5..d8aef3817 100755
+index a90be7109..4fdea0324 100755
 --- a/scripts/brp-strip-comment-note
 +++ b/scripts/brp-strip-comment-note
 @@ -14,7 +14,7 @@ esac
@@ -50,5 +50,5 @@ index 833ac78e5..d8aef3817 100755
  	sed -n -e 's/^\(.*\):[ 	]*ELF.*, stripped.*/\1/p'`; do
  	note="-R .note"
 -- 
-2.19.2
+2.26.2
 

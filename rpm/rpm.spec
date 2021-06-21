@@ -2,28 +2,28 @@
 
 Summary: The RPM package management system
 Name: rpm
-Version: 4.14.1
+Version: 4.16.1.3
 Release: 1
-Source0: http://rpm.org/releases/%{name}-%{version}.tar.bz2
+Source0: %{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
 Patch1:  0001-openSUSE-finddebuginfo-patch.patch
 Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
 Patch3:  0003-OpenSUSE-debugsubpkg.patch
 Patch4:  0004-OpenSUSE-fileattrs.patch
 Patch5:  0005-OpenSUSE-elfdeps.patch
-Patch6:  0006-OpenSUSE-debugedit-bnc1076819.patch
-Patch7:  0007-add-python3-macro.patch
 Patch8:  0008-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Patch9:  0009-Compatibility-with-older-dd.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
-Patch14: 0014-Do-not-use-xargs-d.patch
-Patch15: 0015-Compatibility-with-busybox-diff.patch
 Patch17: 0017-rpmsign-Close-file-before-replacing.patch
 Patch18: 0018-include-plugin-header.patch
+# Fix for error: liblzma: Memory allocation failed
+# Next version of rpm should have better handling of parallel processes
+# so then it could probably be removed.
+Patch19: 0019-Limit-to-4-threads-for-lzma-compression-to-make-sure.patch
+
 Url: http://www.rpm.org/
-# See also https://github.com/mer-packages/rpm/
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD 
@@ -55,6 +55,9 @@ BuildRequires: lua-devel
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
+# Need rpm-sign for the work around to include old version of so files
+# can be removed after transition
+BuildRequires: rpm-sign
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -133,7 +136,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-lua \
     --with-cap  
 
-make %{?_smp_mflags}
+%make_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -186,9 +189,12 @@ install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
-# https://bugzilla.redhat.com/show_bug.cgi?id=1538657
-head -n1 $RPM_BUILD_ROOT/%{rpmhome}/python-macro-helper | grep -E '^#!/usr/bin/' && sed -i '1d' $RPM_BUILD_ROOT/%{rpmhome}/python-macro-helper
-chmod -x $RPM_BUILD_ROOT/%{rpmhome}/python-macro-helper
+# Work around the fact that existing build tools need old librpm.so.8 and librpmio.so.8
+# while this builds librpm.so.9 and librpmio.so.9
+cp %{_libdir}/librpm.so.8 $RPM_BUILD_ROOT%{_libdir}/
+cp %{_libdir}/librpmio.so.8 $RPM_BUILD_ROOT%{_libdir}/
+cp %{_libdir}/librpmbuild.so.8 $RPM_BUILD_ROOT%{_libdir}/
+cp %{_libdir}/librpmsign.so.8 $RPM_BUILD_ROOT%{_libdir}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -228,8 +234,6 @@ exit 0
 %{_libdir}/rpm-plugins/ima.so
 %{_libdir}/rpm-plugins/prioreset.so
 
-%attr(0755, root, root) %dir %{rpmhome}
-
 %{rpmhome}/macros
 %{rpmhome}/macros.d
 %{rpmhome}/rpmpopt*
@@ -241,7 +245,6 @@ exit 0
 %{rpmhome}/rpm2cpio.sh
 %{rpmhome}/tgpg
 %{rpmhome}/platform
-%{rpmhome}/python-macro-helper
 
 %dir %{rpmhome}/fileattrs
 
@@ -266,9 +269,7 @@ exit 0
 %{rpmhome}/*deps*
 %{rpmhome}/*.prov
 %{rpmhome}/*.req
-%{rpmhome}/config.*
 %{rpmhome}/mkinstalldirs
-%{rpmhome}/macros.p*
 %{rpmhome}/fileattrs/*
 
 %files devel
@@ -289,7 +290,11 @@ exit 0
 %{_mandir}/man8/rpmkeys.8.gz
 %{_mandir}/man8/rpmspec.8.gz
 %{_mandir}/man8/rpm-misc.8.gz
-%{_mandir}/man8/rpm-plugin-systemd-inhibit.8.gz
+%{_mandir}/man8/rpm-plugin-ima.8.gz
+%{_mandir}/man8/rpm-plugin-prioreset.8.gz
+%{_mandir}/man8/rpm-plugin-syslog.8.gz
+%{_mandir}/man8/rpm-plugins.8.gz
+%{_mandir}/man8/rpm2archive.8.gz
 
 # XXX this places translated manuals to wrong package wrt eg rpmbuild
 %lang(fr) %{_mandir}/fr/man[18]/*.[18]*

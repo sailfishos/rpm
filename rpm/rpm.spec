@@ -6,6 +6,7 @@ Version: 4.16.1.3
 Release: 1
 Source0: %{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
+Source2: rpmdb-rebuild.service
 Patch1:  0001-openSUSE-finddebuginfo-patch.patch
 Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
 Patch3:  0003-OpenSUSE-debugsubpkg.patch
@@ -151,6 +152,10 @@ rm -rf $RPM_BUILD_ROOT
 
 find %{buildroot} -regex ".*\\.la$" | xargs rm -f -- 
 
+# We cannot use _unitdir macro as we don't want to depend on systemd
+mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/systemd/system
+
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm
 mkdir -p $RPM_BUILD_ROOT%{rpmhome}/macros.d
 mkdir -p $RPM_BUILD_ROOT/bin
@@ -202,19 +207,23 @@ rm -rf $RPM_BUILD_ROOT
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
-%posttrans
-# XXX this is klunky and ugly, rpm itself should handle this
-dbstat=%{rpmhome}/rpmdb_stat
-if [ -x "$dbstat" ]; then
-    if "$dbstat" -e -h /var/lib/rpm 2>&1 | grep -q "doesn't match environment version \| Invalid argument"; then
-        rm -f /var/lib/rpm/__db.* 
-    fi
+# Handle rpmdb rebuild service on erasure of old to avoid ordering issues
+# https://pagure.io/fesco/issue/2382
+%triggerun -- rpm < 4.16.1.3+git2
+if [ -x /usr/bin/systemctl ]; then
+    systemctl --no-reload preset rpmdb-rebuild ||:
 fi
-exit 0
+
+%posttrans
+if [ -f /var/lib/rpm/Packages ]; then
+    touch /var/lib/rpm/.rebuilddb
+fi
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %license COPYING
+
+/usr/lib/systemd/system/rpmdb-rebuild.service
 
 %dir %{_sysconfdir}/rpm
 

@@ -9,6 +9,7 @@ Version: 4.16.1.3
 Release: 1
 Source0: %{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
+Source2: rpmdb-rebuild.service
 Patch1:  0001-openSUSE-finddebuginfo-patch.patch
 Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
 Patch3:  0003-OpenSUSE-debugsubpkg.patch

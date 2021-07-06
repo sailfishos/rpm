@@ -26,6 +26,7 @@ Patch18: 0018-include-plugin-header.patch
 # Next version of rpm should have better handling of parallel processes
 # so then it could probably be removed.
 Patch19: 0019-Limit-to-4-threads-for-lzma-compression-to-make-sure.patch
+Patch20: 0020-Do-not-fail-on-magic-errors.patch
 Url: http://www.rpm.org/
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD

@@ -196,13 +196,6 @@ install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
-# Work around the fact that existing build tools need old librpm.so.8 and librpmio.so.8
-# while this builds librpm.so.9 and librpmio.so.9
-cp %{_libdir}/librpm.so.8 $RPM_BUILD_ROOT%{_libdir}/
-cp %{_libdir}/librpmio.so.8 $RPM_BUILD_ROOT%{_libdir}/
-cp %{_libdir}/librpmbuild.so.8 $RPM_BUILD_ROOT%{_libdir}/
-cp %{_libdir}/librpmsign.so.8 $RPM_BUILD_ROOT%{_libdir}/
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 

@@ -58,6 +58,7 @@ BuildRequires: lua-devel
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
+BuildRequires: libzstd-devel
 # Need rpm-sign for the work around to include old version of so files
 # can be removed after transition
 BuildRequires: rpm-sign
@@ -107,6 +108,7 @@ Requires: rpm = %{version}-%{release}
 Requires: elfutils >= 0.128 binutils
 Requires: findutils sed grep gawk diffutils file patch >= 2.5
 Requires: tar unzip gzip bzip2 cpio lzma xz
+Requires: zstd
 Requires: pkgconfig
 
 %description build
@@ -136,6 +138,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-vendor=meego \
     --with-external-db \
     --with-crypto=openssl \
+    --enable-zstd \
     --with-lua \
     --with-cap  
 

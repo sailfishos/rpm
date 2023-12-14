@@ -37,8 +37,6 @@ License: GPLv2+
 Requires: curl
 Requires: coreutils
 Requires: db4-utils
-Requires: liblua
-Requires: openssl-libs
 BuildRequires: db4-devel
 BuildRequires: meego-rpm-config
 BuildRequires: autoconf

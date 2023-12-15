@@ -172,16 +172,6 @@ rm -f ${RPM_BUILD_ROOT}%{rpmhome}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
-for dbi in \
-    Basenames Conflictname Dirnames Group Installtid Name Packages \
-    Providename Provideversion Requirename Requireversion Triggername \
-    Filedigests Pubkeys Sha1header Sigmd5 Obsoletename \
-    __db.001 __db.002 __db.003 __db.004 __db.005 __db.006 __db.007 \
-    __db.008 __db.009
-do
-    touch $RPM_BUILD_ROOT/var/lib/rpm/$dbi
-done
-
 %find_lang %{name}
 
 find $RPM_BUILD_ROOT -name "*.la"|xargs rm -f
@@ -203,7 +193,10 @@ chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+test -f var/lib/rpm/Packages || rpmdb --initdb
+
 %postun -p /sbin/ldconfig
 
 # Handle rpmdb rebuild service on erasure of old to avoid ordering issues
@@ -226,8 +219,7 @@ fi
 
 %dir %{_sysconfdir}/rpm
 
-%attr(0755, root, root)   %dir /var/lib/rpm
-%attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok) /var/lib/rpm/*
+%attr(0755, root, root) %dir /var/lib/rpm
 %attr(0755, root, root) %dir %{rpmhome}
 
 /bin/rpm

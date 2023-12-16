@@ -1,8 +1,3 @@
-%global py_ver %(python3 -c 'import sys; print(sys.version[:3])')
-
-%define py_libdir %{_libdir}/python%{py_ver}
-%define py_sitedir %{py_libdir}/site-packages
-
 Summary: The RPM package management system python3 support
 Name: rpm-python
 Version: 4.16.1.3
@@ -94,19 +89,14 @@ export CPPFLAGS CFLAGS LDFLAGS
 
 %make_build
 
-%install
-rm -rf $RPM_BUILD_ROOT
-
-make DESTDIR="$RPM_BUILD_ROOT" install
-find "%{buildroot}" -not -type d -and -not -path %{buildroot}%{_libdir}/python%{py_ver}/site-packages/rpm/\* -print0 | xargs -0 rm
-pushd $RPM_BUILD_ROOT/%py_sitedir/rpm
-rm -f _rpmmodule.a _rpmmodule.la
-python3 %py_libdir/py_compile.py *.py
-python3 -O %py_libdir/py_compile.py *.py
+pushd python
+%py3_build
 popd
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+%install
+pushd python
+%py3_install
+popd
 
 %files
 %defattr(-,root,root)

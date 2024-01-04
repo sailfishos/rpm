@@ -1,0 +1,30 @@
+From e5fa88f95e72fe9e59c0750fc69880818194b9af Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bj=C3=B6rn=20Bidar?= <bjorn.bidar@jolla.com>
+Date: Mon, 8 Jan 2024 04:21:59 +0200
+Subject: [PATCH] Also delete symbol links that could point to la-files
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+la files can be shipped as symbolic links and as file.
+Both should be deleted and the symbolic link shouldn't be followed
+as it will be invalid.
+
+Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
+---
+ scripts/brp-remove-la-files | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/brp-remove-la-files b/scripts/brp-remove-la-files
+index f184139c7..b1dc39336 100755
+--- a/scripts/brp-remove-la-files
++++ b/scripts/brp-remove-la-files
+@@ -5,4 +5,4 @@ if [ -z "$RPM_BUILD_ROOT" ] || [ "$RPM_BUILD_ROOT" = "/" ]; then
+   exit 0
+ fi
+ 
+-find "$RPM_BUILD_ROOT" -name "*.la" -type f -delete
++find -H "$RPM_BUILD_ROOT" -name "*.la" -a \( -type f -o -type l \) -delete
+-- 
+2.43.0
+

@@ -26,6 +26,8 @@ Patch19: 0019-Limit-to-4-threads-for-lzma-compression-to-make-sure.patch
 Patch20: 0020-Do-not-fail-on-magic-errors.patch
 Patch21: 0021-Revert-Don-t-set-target-in-configure-RhBug-458648.patch
 Patch22: 0022-brp-python-bytecompile-Ensure-reproducibility-of-inv.patch
+Patch23: 0023-Add-brp-remove-la-files-script.patch
+Patch24: 0024-Also-delete-symbol-links-that-could-point-to-la-file.patch
 
 Url: https://github.com/sailfishos/rpm
 

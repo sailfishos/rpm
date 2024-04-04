@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bj=C3=B6rn=20Bidar?= <bjorn.bidar@jolla.com>
+Date: Thu, 4 Apr 2024 03:47:47 +0300
+Subject: [PATCH] Exclude /usr/share/info/dir from check-files
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Taken from:
+https://build.opensuse.org/projects/Base:System/packages/rpm/files/checkfilesnoinfodir.diff
+
+Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
+---
+ scripts/check-files | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/check-files b/scripts/check-files
+index 12bacfb0ed6d9b0b790cb82566b176e582900687..3158fef497dcebcec69ae7cf688b4c0fe09f6278 100755
+--- a/scripts/check-files
++++ b/scripts/check-files
+@@ -28,5 +28,5 @@ trap "rm -f \"${FILES_DISK}\"" 0 2 3 5 10 13 15
+ # Find non-directory files in the build root and compare to the manifest.
+ # TODO: regex chars in last sed(1) expression should be escaped
+ find "${RPM_BUILD_ROOT}" -type f -o -type l | LC_ALL=C sort > "${FILES_DISK}"
+-LC_ALL=C sort | diff -d "${FILES_DISK}" - | sed -n 's!^\(-\|< \)'"${RPM_BUILD_ROOT}"'\(.*\)$!   \2!gp'
++LC_ALL=C sort | diff -d "${FILES_DISK}" - | sed -n -e 's!^\(-\|< \)'"${RPM_BUILD_ROOT}"'/usr/share/info/dir$!!' -e 's!^\(-\|< \)'"${RPM_BUILD_ROOT}"'\(.*\)$!   \2!gp'
+ 

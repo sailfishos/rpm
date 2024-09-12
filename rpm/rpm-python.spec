@@ -1,6 +1,6 @@
 Summary: The RPM package management system python3 support
 Name: rpm-python
-Version: 4.16.1.3
+Version: 4.19.1.1
 Release: 1
 # Normally we could just read rpm.spec
 # for our sources but tar_git doesn't include rpm.spec

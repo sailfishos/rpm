@@ -2,13 +2,9 @@ Source0: %{name}-%{version}.tar.bz2
 Source1: libsymlink.attr
 Source2: rpmdb-rebuild.service
 Source100: shared.inc
-Patch1:  0001-openSUSE-finddebuginfo-patch.patch
-Patch2:  0002-OpenSUSE-finddebuginfo-absolute-links.patch
-Patch3:  0003-OpenSUSE-debugsubpkg.patch
 Patch4:  0004-OpenSUSE-fileattrs.patch
 Patch5:  0005-OpenSUSE-elfdeps.patch
 Patch8:  0008-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
-Patch9:  0009-Compatibility-with-older-dd.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch

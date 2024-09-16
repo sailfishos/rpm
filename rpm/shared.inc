@@ -6,7 +6,6 @@ Patch4:  0004-OpenSUSE-fileattrs.patch
 Patch5:  0005-OpenSUSE-elfdeps.patch
 Patch8:  0008-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
-Patch11: 0011-Disable-systemdinhibit-plugin-to-minimize-dependenci.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
 Patch18: 0018-include-plugin-header.patch
 # Fix for error: liblzma: Memory allocation failed

@@ -45,3 +45,13 @@ index 000000000..a8aafa6f1
 +%__elflib_requires	%{_rpmconfigdir}/elfdeps --assume-exec --requires %{?__filter_GLIBC_PRIVATE:--filter-private}
 +%__elflib_magic		^(setuid )?(setgid )?(sticky )?ELF (32|64)-bit.*shared object
 +%__elflib_exclude_path	^/usr/lib/debug/
+diff --git a/fileattrs/libsymlink.attr b/fileattrs/libsymlink.attr
+new file mode 100644
+index 000000000..353012d92
+--- /dev/null
++++ b/fileattrs/libsymlink.attr
+@@ -0,0 +1,4 @@
++# Make libfoo.so symlinks require the soname-provide of the target library
++%__libsymlink_requires		%{_rpmconfigdir}/elfdeps --provides --soname-only
++%__libsymlink_magic		^symbolic link to `.*lib.*\.so\..*'$
++%__libsymlink_exclude_path	^(/usr/lib/debug/.*|.*[[:digit:]])$

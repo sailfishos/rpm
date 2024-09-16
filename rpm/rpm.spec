@@ -130,7 +130,7 @@ find %{buildroot} -regex ".*\\.la$" | xargs rm -f --
 
 # We cannot use _unitdir macro as we don't want to depend on systemd
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/systemd/system
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/usr/lib/systemd/system
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm
 mkdir -p $RPM_BUILD_ROOT%{rpmhome}/macros.d

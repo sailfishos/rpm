@@ -1,6 +1,5 @@
 Source0: %{name}-%{version}.tar.bz2
-Source1: libsymlink.attr
-Source2: rpmdb-rebuild.service
+Source1: rpmdb-rebuild.service
 Source100: shared.inc
 Patch4:  0004-OpenSUSE-fileattrs.patch
 Patch5:  0005-OpenSUSE-elfdeps.patch

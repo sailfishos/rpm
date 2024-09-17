@@ -14,6 +14,7 @@ Patch19: 0019-Limit-to-4-threads-for-lzma-compression-to-make-sure.patch
 Patch21: 0021-Revert-Don-t-set-target-in-configure-RhBug-458648.patch
 Patch24: 0024-Also-delete-symbol-links-that-could-point-to-la-file.patch
 Patch25: 0025-Exclude-usr-share-info-dir-from-check-files.patch
+Patch26: 0001-Fix-macros-with-older-rpm.patch
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD 

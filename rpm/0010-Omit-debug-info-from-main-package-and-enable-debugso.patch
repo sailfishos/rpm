@@ -1,18 +1,18 @@
-From ab71796387bf91ae036c577a461d4ead259d47f1 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Andrew Branson <andrew.branson@jollamobile.com>
 Date: Mon, 30 Apr 2018 17:14:48 +0200
 Subject: [PATCH] Omit debug info from main package, and enable debugsource
  packages
 
 ---
- macros.in | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ macros.in | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/macros.in b/macros.in
-index d086248..73f8359 100644
+index b49ffaad4..89c12f6d9 100644
 --- a/macros.in
 +++ b/macros.in
-@@ -429,13 +429,13 @@
+@@ -428,13 +428,13 @@ Supplements:   (%{name} = %{version}-%{release} and langpacks-%{1})\
  # Should missing %doc files in the build directory terminate a build?
  #
  # Note: The default value should be 0 for legacy compatibility.
@@ -28,7 +28,7 @@ index d086248..73f8359 100644
  
  #
  # Should binaries in noarch packages terminate a build?
-@@ -522,14 +523,14 @@ package or when debugging this package.\
+@@ -521,14 +521,14 @@ Supplements:   (%{name} = %{version}-%{release} and langpacks-%{1})\
  #   Same as for "separate" but if the __debug_package global is set then
  #   the -debuginfo package will have a compatibility link for the main
  #   ELF /usr/lib/debug/.build-id/xx/yyy -> /usr/lib/.build-id/xx/yyy
@@ -45,7 +45,7 @@ index d086248..73f8359 100644
  
  # Do not recompute build-ids but keep whatever is in the ELF file already.
  # Cannot be used together with _unique_build_ids (which forces recomputation).
-@@ -551,10 +552,10 @@ package or when debugging this package.\
+@@ -550,10 +550,10 @@ Supplements:   (%{name} = %{version}-%{release} and langpacks-%{1})\
  %_unique_debug_srcs	1
  
  # Whether rpm should put debug source files into its own subpackage
@@ -58,6 +58,3 @@ index d086248..73f8359 100644
  
  #
  # Use internal dependency generator rather than external helpers?
--- 
-1.8.3-rc3
-

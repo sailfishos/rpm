@@ -1,29 +1,45 @@
-From c7aacb0fb283f8196ee07d85ed3220028e7ae4c3 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: David Greaves <david@dgreaves.com>
 Date: Wed, 17 Apr 2013 20:41:09 +0000
 Subject: [PATCH] OpenSUSE-fileattrs
 
---- ./fileattrs/Makefile.am.orig	2019-10-02 11:39:56.095525981 +0000
-+++ ./fileattrs/Makefile.am	2019-10-02 11:40:20.695473538 +0000
-@@ -8,6 +8,6 @@ fattrsdir = $(rpmconfigdir)/fileattrs
- fattrs_DATA = \
- 	debuginfo.attr desktop.attr elf.attr font.attr libtool.attr metainfo.attr \
- 	perl.attr perllib.attr pkgconfig.attr python.attr pythondist.attr ocaml.attr \
--	script.attr
-+	script.attr elflib.attr
- 
- EXTRA_DIST = $(fattrs_DATA)
---- ./fileattrs/elf.attr.orig	2019-06-26 14:17:31.404985707 +0000
-+++ ./fileattrs/elf.attr	2019-10-02 11:39:56.095525981 +0000
-@@ -1,4 +1,5 @@
- %__elf_provides		%{_rpmconfigdir}/elfdeps --provides %{?__filter_GLIBC_PRIVATE:--filter-private}
- %__elf_requires		%{_rpmconfigdir}/elfdeps --requires %{?__filter_GLIBC_PRIVATE:--filter-private}
+---
+ fileattrs/CMakeLists.txt  | 1 +
+ fileattrs/elf.attr        | 4 ++--
+ fileattrs/elflib.attr     | 4 ++++
+ fileattrs/libsymlink.attr | 4 ++++
+ 4 files changed, 11 insertions(+), 2 deletions(-)
+ create mode 100644 fileattrs/elflib.attr
+ create mode 100644 fileattrs/libsymlink.attr
+
+diff --git a/fileattrs/CMakeLists.txt b/fileattrs/CMakeLists.txt
+index 601e8421b..220696d4e 100644
+--- a/fileattrs/CMakeLists.txt
++++ b/fileattrs/CMakeLists.txt
+@@ -2,5 +2,6 @@ install(FILES
+ 	debuginfo.attr desktop.attr elf.attr font.attr metainfo.attr
+ 	perl.attr perllib.attr pkgconfig.attr ocaml.attr
+ 	rpm_macro.attr rpm_lua.attr script.attr sysusers.attr usergroup.attr
++	elflib.attr libsymlink.attr
+ 	DESTINATION ${RPM_CONFIGDIR}/fileattrs
+ )
+diff --git a/fileattrs/elf.attr b/fileattrs/elf.attr
+index 21bc471b0..821cc45c7 100644
+--- a/fileattrs/elf.attr
++++ b/fileattrs/elf.attr
+@@ -1,4 +1,4 @@
+ %__elf_provides		%{_rpmconfigdir}/elfdeps --provides
+ %__elf_requires		%{_rpmconfigdir}/elfdeps --requires
 -%__elf_magic		^(setuid,? )?(setgid,? )?(sticky )?ELF (32|64)-bit.*$
+-%__elf_exclude_path	^/lib/modules/.*\.ko?(\.[[:alnum:]]*)$
 +%__elf_magic		^(setuid,? )?(setgid,? )?(sticky )?ELF (32|64)-bit.*executable
- %__elf_flags		exeonly
-+%__elf_exclude_path	^/usr/lib/debug/
---- ./fileattrs/elflib.attr.orig	2019-10-02 11:39:56.095525981 +0000
-+++ ./fileattrs/elflib.attr	2019-10-02 11:39:56.095525981 +0000
++%__elf_exclude_path	^(/lib/modules/.*\\.ko?(\\.[[:alnum:]]*)$)|(/usr/lib/debug/)
+\ No newline at end of file
+diff --git a/fileattrs/elflib.attr b/fileattrs/elflib.attr
+new file mode 100644
+index 000000000..a8aafa6f1
+--- /dev/null
++++ b/fileattrs/elflib.attr
 @@ -0,0 +1,4 @@
 +%__elflib_provides	%{_rpmconfigdir}/elfdeps --assume-exec --provides %{?__filter_GLIBC_PRIVATE:--filter-private}
 +%__elflib_requires	%{_rpmconfigdir}/elfdeps --assume-exec --requires %{?__filter_GLIBC_PRIVATE:--filter-private}

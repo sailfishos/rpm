@@ -81,6 +81,7 @@ Requires: findutils sed grep gawk diffutils file patch >= 2.5
 Requires: tar unzip gzip bzip2 cpio lzma xz
 Requires: zstd
 Requires: pkgconfig
+Requires: debugedit
 
 %description build
 The rpm-build package contains the scripts and executable programs
@@ -111,7 +112,8 @@ export CPPFLAGS CFLAGS LDFLAGS
     --with-crypto=openssl \
     --enable-zstd \
     --with-lua \
-    --with-cap  
+    --with-cap \
+    --disable-inhibit-plugin
 
 %make_build
 
@@ -159,6 +161,11 @@ mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
 install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
+
+# Provide symlinks for legacy location bins and scripts. JB#62519
+ln -sf %{_bindir}/debugedit      $RPM_BUILD_ROOT%{rpmhome}/debugedit
+ln -sf %{_bindir}/find-debuginfo $RPM_BUILD_ROOT%{rpmhome}/find-debuginfo.sh
+ln -sf %{_bindir}/sepdebugcrcfix $RPM_BUILD_ROOT%{rpmhome}/sepdebugcrcfix
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -230,9 +237,12 @@ fi
 
 %{rpmhome}/brp-*
 %{rpmhome}/check-*
+
+# Remove these when updating rpm. JB#62519
 %{rpmhome}/debugedit
 %{rpmhome}/sepdebugcrcfix
 %{rpmhome}/find-debuginfo.sh
+
 %{rpmhome}/find-lang.sh
 %{rpmhome}/*provides*
 %{rpmhome}/*requires*

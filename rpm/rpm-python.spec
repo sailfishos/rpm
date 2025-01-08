@@ -63,6 +63,7 @@ export CPPFLAGS CFLAGS LDFLAGS
     --enable-zstd \
     --with-lua \
     --with-cap \
+    --disable-inhibit-plugin \
     --enable-python
 
 %make_build

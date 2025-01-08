@@ -1,12 +1,27 @@
 diff --git a/Makefile.am b/Makefile.am
-index 345adbc9e..605ae1b30 100644
+index 33ccb0de1..99ddd06fd 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -85,6 +85,7 @@ pkginclude_HEADERS += lib/rpmts.h
+@@ -97,6 +97,7 @@ pkginclude_HEADERS += lib/rpmte.h
+ pkginclude_HEADERS += lib/rpmts.h
  pkginclude_HEADERS += lib/rpmtypes.h
- pkginclude_HEADERS += lib/rpmvf.h
  pkginclude_HEADERS += lib/rpmarchive.h
 +pkginclude_HEADERS += lib/rpmplugin.h
  
  pkginclude_HEADERS += sign/rpmsign.h
  
+diff --git a/preinstall.am b/preinstall.am
+index 78b467070..0159d5be9 100644
+--- a/preinstall.am
++++ b/preinstall.am
+@@ -126,6 +126,10 @@ include/rpm/rpmarchive.h: lib/rpmarchive.h include/rpm/$(dirstamp)
+ 	$(INSTALL_DATA) $(top_srcdir)/lib/rpmarchive.h include/rpm/rpmarchive.h
+ BUILT_SOURCES += include/rpm/rpmarchive.h
+ CLEANFILES += include/rpm/rpmarchive.h
++include/rpm/rpmplugin.h: lib/rpmplugin.h include/rpm/$(dirstamp)
++	$(INSTALL_DATA) $(top_srcdir)/lib/rpmplugin.h include/rpm/rpmplugin.h
++BUILT_SOURCES += include/rpm/rpmplugin.h
++CLEANFILES += include/rpm/rpmplugin.h
+ include/rpm/rpmsign.h: sign/rpmsign.h include/rpm/$(dirstamp)
+ 	$(INSTALL_DATA) $(top_srcdir)/sign/rpmsign.h include/rpm/rpmsign.h
+ BUILT_SOURCES += include/rpm/rpmsign.h

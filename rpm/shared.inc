@@ -8,7 +8,7 @@ Patch5:  0005-OpenSUSE-elfdeps.patch
 Patch8:  0008-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
-Patch18: 0018-include-plugin-header.patch
+Patch18: 0018-Make-the-plugin-API-public.patch
 # Fix for error: liblzma: Memory allocation failed
 # Next version of rpm should have better handling of parallel processes
 # so then it could probably be removed.

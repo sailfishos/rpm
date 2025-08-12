@@ -1,0 +1,208 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Panu Matilainen <pmatilai@redhat.com>
+Date: Wed, 13 Sep 2023 14:32:16 +0300
+Subject: [PATCH] Make the plugin API public
+
+We've procrastinated on making this API public for about ten years now,
+and in the meanwhile there has been exactly one disruptive change to
+the API. As in, it might've just as well been public all along.
+
+There will always be more things to improve wrt any API, but we're not
+going to hold this hostage to one more thing or another anymore. Some
+of them we'd like to do before this goes to a stable release (ie 4.20)
+but doing this now to kinda enforce this actually happens this time
+around, through come hell or high water.
+
+Fixes: #1536
+---
+ include/rpm/CMakeLists.txt       | 2 +-
+ {lib => include/rpm}/rpmplugin.h | 0
+ lib/CMakeLists.txt               | 2 +-
+ lib/rpmplugins.h                 | 2 +-
+ plugins/CMakeLists.txt           | 2 --
+ plugins/audit.c                  | 2 +-
+ plugins/dbus_announce.c          | 2 +-
+ plugins/fapolicyd.c              | 2 +-
+ plugins/fsverity.c               | 2 +-
+ plugins/ima.c                    | 3 +--
+ plugins/prioreset.c              | 2 +-
+ plugins/selinux.c                | 2 +-
+ plugins/syslog.c                 | 2 +-
+ plugins/systemd_inhibit.c        | 2 +-
+ 14 files changed, 12 insertions(+), 15 deletions(-)
+ rename {lib => include/rpm}/rpmplugin.h (100%)
+
+diff --git a/include/rpm/CMakeLists.txt b/include/rpm/CMakeLists.txt
+index 53a59f7a9..4f587273d 100644
+--- a/include/rpm/CMakeLists.txt
++++ b/include/rpm/CMakeLists.txt
+@@ -6,7 +6,7 @@ install(FILES
+         header.h rpmarchive.h rpmcallback.h rpmcli.h
+         rpmdb.h rpmds.h rpmfi.h rpmfiles.h rpmlib.h
+         rpmprob.h rpmps.h rpmtag.h rpmtd.h rpmte.h rpmte.h rpmts.h
+-        rpmtypes.h
++        rpmtypes.h rpmplugin.h
+ 
+ 	rpmbuild.h rpmspec.h rpmfc.h
+ 
+diff --git a/lib/rpmplugin.h b/include/rpm/rpmplugin.h
+similarity index 100%
+rename from lib/rpmplugin.h
+rename to include/rpm/rpmplugin.h
+diff --git a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+index 2528a64ff..e9e75b607 100644
+--- a/lib/CMakeLists.txt
++++ b/lib/CMakeLists.txt
+@@ -39,7 +39,7 @@ target_sources(librpm PRIVATE
+ 	verify.c rpmlock.c rpmlock.h misc.h relocation.c
+ 	rpmscript.h rpmscript.c
+ 	rpmchroot.c rpmchroot.h
+-	rpmplugins.c rpmplugins.h rpmplugin.h rpmug.c rpmug.h
++	rpmplugins.c rpmplugins.h rpmug.c rpmug.h
+ 	rpmtriggers.h rpmtriggers.c rpmvs.c rpmvs.h
+ )
+ 
+diff --git a/lib/rpmplugins.h b/lib/rpmplugins.h
+index 287a302e0..97408f081 100644
+--- a/lib/rpmplugins.h
++++ b/lib/rpmplugins.h
+@@ -3,7 +3,7 @@
+ 
+ #include <rpm/rpmtypes.h>
+ #include <rpm/rpmfi.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+diff --git a/plugins/CMakeLists.txt b/plugins/CMakeLists.txt
+index c2c112b8e..5fd526e59 100644
+--- a/plugins/CMakeLists.txt
++++ b/plugins/CMakeLists.txt
+@@ -43,8 +43,6 @@ set(plugindir ${CMAKE_INSTALL_FULL_LIBDIR}/rpm-plugins)
+ get_property(plugins DIRECTORY PROPERTY BUILDSYSTEM_TARGETS)
+ foreach(plugin ${plugins})
+ 	target_link_libraries(${plugin} PRIVATE librpmio librpm ${Intl_LIBRARIES})
+-	# XX this is wrong, but required while rpmplugin.h is there
+-	target_include_directories(${plugin} PRIVATE ${CMAKE_SOURCE_DIR}/lib ${Intl_INCLUDE_DIRS})
+ 	install(TARGETS ${plugin} DESTINATION ${plugindir})
+ endforeach()
+ 
+diff --git a/plugins/audit.c b/plugins/audit.c
+index be10bbebe..a4309f729 100644
+--- a/plugins/audit.c
++++ b/plugins/audit.c
+@@ -5,7 +5,7 @@
+ 
+ #include <rpm/rpmstring.h>
+ #include <rpm/rpmts.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ struct teop {
+     rpmte te;
+diff --git a/plugins/dbus_announce.c b/plugins/dbus_announce.c
+index f9535253d..d318d66dc 100644
+--- a/plugins/dbus_announce.c
++++ b/plugins/dbus_announce.c
+@@ -7,7 +7,7 @@
+ #include <rpm/rpmstring.h>
+ #include <rpm/rpmts.h>
+ #include <rpm/rpmdb.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ struct dbus_announce_data {
+     DBusConnection * bus;
+diff --git a/plugins/fapolicyd.c b/plugins/fapolicyd.c
+index e2f180a09..6e955c79d 100644
+--- a/plugins/fapolicyd.c
++++ b/plugins/fapolicyd.c
+@@ -3,7 +3,7 @@
+ #include <rpm/rpmts.h>
+ #include <rpm/rpmlog.h>
+ #include <rpm/rpmstring.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ #include <stdlib.h>
+ #include <fcntl.h>
+ #include <errno.h>
+diff --git a/plugins/fsverity.c b/plugins/fsverity.c
+index f0c81a343..467ba62a4 100644
+--- a/plugins/fsverity.c
++++ b/plugins/fsverity.c
+@@ -19,8 +19,8 @@
+ #include <rpm/rpmstring.h>
+ #include <rpm/rpmmacro.h>
+ #include <rpm/rpmpgp.h>
++#include <rpm/rpmplugin.h>
+ 
+-#include "rpmplugin.h"
+ #include "rpmsignverity.h"
+ 
+ static int sign_config_files = 0;
+diff --git a/plugins/ima.c b/plugins/ima.c
+index b157370d8..3982b2e20 100644
+--- a/plugins/ima.c
++++ b/plugins/ima.c
+@@ -10,8 +10,7 @@
+ #include <rpm/rpmlog.h>
+ #include <rpm/rpmstring.h>
+ #include <rpm/rpmmacro.h>
+-
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ #define XATTR_NAME_IMA "security.ima"
+ 
+diff --git a/plugins/prioreset.c b/plugins/prioreset.c
+index be9a5fe40..a57c58f97 100644
+--- a/plugins/prioreset.c
++++ b/plugins/prioreset.c
+@@ -8,7 +8,7 @@
+ #endif
+ 
+ #include <rpm/rpmlog.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ #include "debug.h"
+ 
+diff --git a/plugins/selinux.c b/plugins/selinux.c
+index dda1cee3a..018c814c2 100644
+--- a/plugins/selinux.c
++++ b/plugins/selinux.c
+@@ -7,7 +7,7 @@
+ #include <rpm/rpmstring.h>
+ #include <rpm/rpmlog.h>
+ #include <rpm/rpmts.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ #include "debug.h"
+ 
+diff --git a/plugins/syslog.c b/plugins/syslog.c
+index f7b1a1388..d6ea7345c 100644
+--- a/plugins/syslog.c
++++ b/plugins/syslog.c
+@@ -5,7 +5,7 @@
+ 
+ #include <rpm/rpmstring.h>
+ #include <rpm/rpmts.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ struct logstat {
+     int logging;
+diff --git a/plugins/systemd_inhibit.c b/plugins/systemd_inhibit.c
+index 27c587417..5d04a9746 100644
+--- a/plugins/systemd_inhibit.c
++++ b/plugins/systemd_inhibit.c
+@@ -6,7 +6,7 @@
+ #include <unistd.h>
+ #include <rpm/rpmlog.h>
+ #include <rpm/rpmts.h>
+-#include "rpmplugin.h"
++#include <rpm/rpmplugin.h>
+ 
+ static int lock_fd = -1; 

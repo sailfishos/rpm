@@ -1,3 +1,5 @@
+%define __cmake_builddir python
+
 Summary: The RPM package management system python3 support
 Name: rpm-python
 Version: 4.19.1.1
@@ -15,19 +17,18 @@ Requires: python3-base
 BuildRequires: python3-devel
 BuildRequires: db4-devel
 BuildRequires: meego-rpm-config
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: libtool
+BuildRequires: gcc
+BuildRequires: make
+BuildRequires: cmake >= 3.18
 BuildRequires: libarchive-devel
 BuildRequires: gawk
 BuildRequires: elfutils-devel >= 0.112
 BuildRequires: elfutils-libelf-devel
-BuildRequires: readline-devel zlib-devel
+BuildRequires: zlib-devel
 BuildRequires: openssl-devel
-# The popt version here just documents an older known-good version
-BuildRequires: popt-devel >= 1.10.2
+BuildRequires: popt-devel >= 1.16
 BuildRequires: file-devel
-BuildRequires: gettext-devel
+BuildRequires: gettext-devel >= 0.19.8
 BuildRequires: ncurses-devel
 BuildRequires: bzip2-devel >= 0.9.0c-2
 BuildRequires: lua-devel >= 5.1
@@ -51,33 +52,35 @@ This package contains python3 support
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
 
-./autogen.sh \
-    --prefix=%{_usr} \
-    --sysconfdir=%{_sysconfdir} \
-    --localstatedir=%{_var} \
-    --sharedstatedir=%{_var}/lib \
-    --libdir=%{_libdir} \
-    --with-vendor=meego \
-    --with-external-db \
-    --with-crypto=openssl \
-    --enable-zstd \
-    --with-lua \
-    --with-cap \
-    --disable-inhibit-plugin \
-    --enable-python
-
-%make_build
-
-pushd python
-%py3_build
-popd
+%cmake \
+    -DCMAKE_INSTALL_PREFIX=%{_usr} \
+    -DCMAKE_INSTALL_SYSCONFDIR=%{_sysconfdir} \
+    -DCMAKE_INSTALL_LOCALSTATEDIR=%{_var} \
+    -DCMAKE_INSTALL_SHAREDSTATEDIR=%{_var}/lib \
+    -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+    -DRPM_VENDOR=meego \
+    -DWITH_OPENSSL=ON \
+    -DWITH_CAP=ON \
+    -DWITH_ACL=OFF \
+    -DWITH_DBUS=OFF \
+    -DWITH_READLINE=OFF \
+    -DENABLE_SQLITE=OFF \
+    -DENABLE_PYTHON=ON \
+    -DWITH_INTERNAL_OPENPGP=ON \
+    -DENABLE_TESTSUITE=OFF \
+    -DWITH_AUDIT=OFF \
+    -DWITH_SELINUX=OFF \
+    -DWITH_FAPOLICYD=OFF \
+    -DWITH_IMAEVM=OFF \
+    -DENABLE_NDB=ON \
+    .
+%cmake_build
 
 %install
-pushd python
-%py3_install
-popd
+%cmake_install
+
+# Remove examples
+rm -Rf %{buildroot}%{_docdir}
 
 %files
-%defattr(-,root,root)
 %{_libdir}/python*
-

@@ -1,5 +1,3 @@
-%define rpmhome /usr/lib/rpm
-
 Summary: The RPM package management system
 Name: rpm
 Version: 4.19.1.1
@@ -11,25 +9,26 @@ Requires: coreutils
 Requires: db4-utils
 BuildRequires: db4-devel
 BuildRequires: meego-rpm-config
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: libtool
+BuildRequires: gcc
+BuildRequires: make
+BuildRequires: cmake >= 3.18
 BuildRequires: gawk
 BuildRequires: elfutils-devel >= 0.112
 BuildRequires: elfutils-libelf-devel
 BuildRequires: zlib-devel
 BuildRequires: openssl-devel
-# The popt version here just documents an older known-good version
-BuildRequires: popt-devel >= 1.10.2
+BuildRequires: popt-devel >= 1.16
 BuildRequires: file-devel
-BuildRequires: gettext-devel
+BuildRequires: gettext-devel >= 0.19.8
 BuildRequires: ncurses-devel
 BuildRequires: bzip2-devel >= 0.9.0c-2
-BuildRequires: lua-devel
+BuildRequires: lua-devel >= 5.1
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
 BuildRequires: libzstd-devel
+BuildRequires: libacl-devel
+
 # Need rpm-sign for the work around to include old version of so files
 # can be removed after transition
 BuildRequires: rpm-sign
@@ -101,26 +100,32 @@ Man pages for %{name}, %{name}-build and %{name}-devel.
 CFLAGS="$RPM_OPT_FLAGS"
 export CPPFLAGS CFLAGS LDFLAGS
 
-./autogen.sh \
-    --prefix=%{_usr} \
-    --sysconfdir=%{_sysconfdir} \
-    --localstatedir=%{_var} \
-    --sharedstatedir=%{_var}/lib \
-    --libdir=%{_libdir} \
-    --with-vendor=meego \
-    --with-external-db \
-    --with-crypto=openssl \
-    --enable-zstd \
-    --with-lua \
-    --with-cap \
-    --disable-inhibit-plugin
-
-%make_build
+%cmake \
+    -DRPM_CONFIGDIR=%{_rpmconfigdir} \
+    -DCMAKE_INSTALL_PREFIX=%{_usr} \
+    -DCMAKE_INSTALL_SYSCONFDIR=%{_sysconfdir} \
+    -DCMAKE_INSTALL_LOCALSTATEDIR=%{_var} \
+    -DCMAKE_INSTALL_SHAREDSTATEDIR=%{_var}/lib \
+    -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+    -DRPM_VENDOR=meego \
+    -DWITH_OPENSSL=ON \
+    -DWITH_CAP=ON \
+    -DWITH_DBUS=OFF \
+    -DWITH_READLINE=OFF \
+    -DENABLE_SQLITE=OFF \
+    -DENABLE_PYTHON=OFF \
+    -DWITH_INTERNAL_OPENPGP=ON \
+    -DENABLE_TESTSUITE=OFF \
+    -DWITH_AUDIT=OFF \
+    -DWITH_SELINUX=OFF \
+    -DWITH_FAPOLICYD=OFF \
+    -DWITH_IMAEVM=OFF \
+    -DENABLE_NDB=ON \
+    .
+%cmake_build
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-%make_install
+%cmake_install
 
 #sed "s/i386/arm/g" platform > platform.arm
 #sed "s/i386/mipsel/g" platform > platform.mipsel
@@ -128,19 +133,19 @@ rm -rf $RPM_BUILD_ROOT
 #DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.arm arm %%{_vendor} linux -gnueabi
 #DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.mipsel mipsel %%{_vendor} linux -gnu
 
-find %{buildroot} -regex ".*\\.la$" | xargs rm -f -- 
+find %{buildroot} -regex ".*\\.la$" | xargs rm -f --
 
 # We cannot use _unitdir macro as we don't want to depend on systemd
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/systemd/system
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm
-mkdir -p $RPM_BUILD_ROOT%{rpmhome}/macros.d
+mkdir -p $RPM_BUILD_ROOT%{_rpmconfigdir}/macros.d
 mkdir -p $RPM_BUILD_ROOT/bin
-mkdir -p $RPM_BUILD_ROOT%{rpmhome}/rpm/fileattrs
+mkdir -p $RPM_BUILD_ROOT%{_rpmconfigdir}/rpm/fileattrs
 
-install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{rpmhome}/fileattrs/libsymlink.attr
-rm -f ${RPM_BUILD_ROOT}%{rpmhome}/rpm/fileattrs/ksyms.attr
+install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_rpmconfigdir}/fileattrs/libsymlink.attr
+rm -f ${RPM_BUILD_ROOT}%{_rpmconfigdir}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
@@ -149,12 +154,7 @@ ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 find $RPM_BUILD_ROOT -name "*.la"|xargs rm -f
 
 # Remove php macro as we don't use php
-rm -f $RPM_BUILD_ROOT/%{rpmhome}/macros.php
-
-# These live in python-rpm-generators now
-# https://bugzilla.redhat.com/show_bug.cgi?id=1410631
-rm -f $RPM_BUILD_ROOT/%{rpmhome}/pythond*
-rm -f $RPM_BUILD_ROOT/%{_fileattrsdir}/python*
+rm -f $RPM_BUILD_ROOT/%{_rpmconfigdir}/macros.php
 
 # Move doc files to their directory
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
@@ -193,7 +193,7 @@ fi
 %dir %{_sysconfdir}/rpm
 
 %attr(0755, root, root) %dir /var/lib/rpm
-%attr(0755, root, root) %dir %{rpmhome}
+%attr(0755, root, root) %dir %{_rpmconfigdir}
 
 /bin/rpm
 %{_bindir}/rpm
@@ -201,52 +201,52 @@ fi
 %{_bindir}/rpm2cpio
 %{_bindir}/rpmdb
 %{_bindir}/rpmquery
+%{_bindir}/rpmsort
 %{_bindir}/rpmverify
 %{_bindir}/rpm2archive
 %{_libdir}/rpm-plugins/syslog.so
-%{_libdir}/rpm-plugins/ima.so
 %{_libdir}/rpm-plugins/prioreset.so
 
-%{rpmhome}/macros
-%{rpmhome}/macros.d
-%{rpmhome}/rpmpopt*
-%{rpmhome}/rpmrc
-%{rpmhome}/rpmdb_*
-%{rpmhome}/rpm.daily
-%{rpmhome}/rpm.log
-%{rpmhome}/rpm.supp
-%{rpmhome}/rpm2cpio.sh
-%{rpmhome}/tgpg
-%{rpmhome}/platform
+%{_rpmconfigdir}/macros
+%{_rpmconfigdir}/macros.d
+%{_rpmconfigdir}/rpmpopt*
+%{_rpmconfigdir}/rpmrc
+%{_rpmconfigdir}/rpmdb_*
+%{_rpmconfigdir}/rpmuncompress
+%{_rpmconfigdir}/rpm.daily
+%{_rpmconfigdir}/rpm.log
+%{_rpmconfigdir}/rpm.supp
+%{_rpmconfigdir}/rpm2cpio.sh
+%{_rpmconfigdir}/sysusers.sh
+%{_rpmconfigdir}/tgpg
+%{_rpmconfigdir}/platform
 
-%dir %{rpmhome}/fileattrs
+%dir %{_rpmconfigdir}/fileattrs
 
 %{_libdir}/librpmio.so.*
 %{_libdir}/librpm.so.*
 
 %files build
 %{_bindir}/rpmbuild
+%{_bindir}/rpmlua
 %{_bindir}/gendiff
 %{_bindir}/rpmspec
+%doc %{_defaultdocdir}/rpm/CREDITS
+%doc %{_defaultdocdir}/rpm/COPYING
+%doc %{_defaultdocdir}/rpm/INSTALL
+%doc %{_defaultdocdir}/rpm/README
 
 %{_libdir}/librpmbuild.so.*
 
-%{rpmhome}/brp-*
-%{rpmhome}/check-*
-
-# Remove these when updating rpm. JB#62519
-%{rpmhome}/debugedit
-%{rpmhome}/sepdebugcrcfix
-%{rpmhome}/find-debuginfo.sh
-
-%{rpmhome}/find-lang.sh
-%{rpmhome}/*provides*
-%{rpmhome}/*requires*
-%{rpmhome}/*deps*
-%{rpmhome}/*.prov
-%{rpmhome}/*.req
-%{rpmhome}/mkinstalldirs
-%{rpmhome}/fileattrs/*
+%{_rpmconfigdir}/brp-*
+%{_rpmconfigdir}/check-*
+%{_rpmconfigdir}/find-lang.sh
+%{_rpmconfigdir}/*provides*
+%{_rpmconfigdir}/*requires*
+%{_rpmconfigdir}/*deps*
+%{_rpmconfigdir}/*.prov
+%{_rpmconfigdir}/*.req
+%{_rpmconfigdir}/fileattrs/*
 
 %files devel
 %defattr(-,root,root)
@@ -254,37 +254,16 @@ fi
 %{_libdir}/librp*[a-z].so
 %{_bindir}/rpmgraph
 %{_libdir}/pkgconfig/rpm.pc
+%{_libdir}/cmake/rpm/
 
 
 %files doc
 %defattr(-, root, root)
 %doc %{_docdir}/%{name}-%{version}
 
-%{_mandir}/man8/rpm.8*
-%{_mandir}/man8/rpm2cpio.8*
-%{_mandir}/man8/rpmdb.8.gz
-%{_mandir}/man8/rpmkeys.8.gz
-%{_mandir}/man8/rpmspec.8.gz
-%{_mandir}/man8/rpm-misc.8.gz
-%{_mandir}/man8/rpm-plugin-ima.8.gz
-%{_mandir}/man8/rpm-plugin-prioreset.8.gz
-%{_mandir}/man8/rpm-plugin-syslog.8.gz
-%{_mandir}/man8/rpm-plugins.8.gz
-%{_mandir}/man8/rpm2archive.8.gz
-
-# XXX this places translated manuals to wrong package wrt eg rpmbuild
-%lang(fr) %{_mandir}/fr/man[18]/*.[18]*
-%lang(ko) %{_mandir}/ko/man[18]/*.[18]*
-%lang(ja) %{_mandir}/ja/man[18]/*.[18]*
-%lang(pl) %{_mandir}/pl/man[18]/*.[18]*
-%lang(ru) %{_mandir}/ru/man[18]/*.[18]*
-%lang(sk) %{_mandir}/sk/man[18]/*.[18]*
-
-%{_mandir}/man1/gendiff.1*
-%{_mandir}/man8/rpmbuild.8*
-%{_mandir}/man8/rpmdeps.8*
-
-%{_mandir}/man8/rpmgraph.8*
+# Upstream has documentation in Markdown, which would need pandoc
+# to generate manpages. We don't have it, so package the md files instead.
+%{_docdir}/%{name}/*.md
 
 %files libs
 %defattr(-,root,root)
@@ -301,7 +280,6 @@ This package contains support for digitally signing RPM packages.
 
 %files sign
 %{_bindir}/rpmsign
-%{_mandir}/man8/rpmsign.8*
 %{_libdir}/librpmsign.so.*
 
 %post sign -p /sbin/ldconfig

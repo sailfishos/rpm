@@ -2,7 +2,7 @@
 
 Summary: The RPM package management system
 Name: rpm
-Version: 4.16.1.3
+Version: 4.19.1.1
 Release: 1
 %include rpm/shared.inc
 
@@ -95,7 +95,7 @@ Requires: rpm = %{version}-%{release}
 Man pages for %{name}, %{name}-build and %{name}-devel.
 
 %prep
-%autosetup  -n rpm-%{version}/upstream -p1
+%autosetup -p1 -n rpm-%{version}/upstream
 
 %build
 CFLAGS="$RPM_OPT_FLAGS"
@@ -162,10 +162,6 @@ install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
-# Provide symlinks for legacy location bins and scripts. JB#62519
-ln -sf %{_bindir}/debugedit      $RPM_BUILD_ROOT%{rpmhome}/debugedit
-ln -sf %{_bindir}/find-debuginfo $RPM_BUILD_ROOT%{rpmhome}/find-debuginfo.sh
-ln -sf %{_bindir}/sepdebugcrcfix $RPM_BUILD_ROOT%{rpmhome}/sepdebugcrcfix
 
 %clean
 rm -rf $RPM_BUILD_ROOT

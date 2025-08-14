@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: David Greaves <david@dgreaves.com>
+Date: Wed, 17 Apr 2013 20:41:09 +0000
+Subject: [PATCH] OpenSUSE-fileattrs
+
+---
+ fileattrs/CMakeLists.txt | 2 +-
+ fileattrs/elf.attr       | 4 ++--
+ fileattrs/elflib.attr    | 4 ++++
+ 3 files changed, 7 insertions(+), 3 deletions(-)
+ create mode 100644 fileattrs/elflib.attr
+
+diff --git a/fileattrs/CMakeLists.txt b/fileattrs/CMakeLists.txt
+index 601e8421b..7767f44a8 100644
+--- a/fileattrs/CMakeLists.txt
++++ b/fileattrs/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ install(FILES
+-	debuginfo.attr desktop.attr elf.attr font.attr metainfo.attr
++	debuginfo.attr desktop.attr elf.attr elflib.attr font.attr metainfo.attr
+ 	perl.attr perllib.attr pkgconfig.attr ocaml.attr
+ 	rpm_macro.attr rpm_lua.attr script.attr sysusers.attr usergroup.attr
+ 	DESTINATION ${RPM_CONFIGDIR}/fileattrs
+diff --git a/fileattrs/elf.attr b/fileattrs/elf.attr
+index 21bc471b0..821cc45c7 100644
+--- a/fileattrs/elf.attr
++++ b/fileattrs/elf.attr
+@@ -1,4 +1,4 @@
+ %__elf_provides		%{_rpmconfigdir}/elfdeps --provides
+ %__elf_requires		%{_rpmconfigdir}/elfdeps --requires
+-%__elf_magic		^(setuid,? )?(setgid,? )?(sticky )?ELF (32|64)-bit.*$
+-%__elf_exclude_path	^/lib/modules/.*\.ko?(\.[[:alnum:]]*)$
++%__elf_magic		^(setuid,? )?(setgid,? )?(sticky )?ELF (32|64)-bit.*executable
++%__elf_exclude_path	^(/lib/modules/.*\\.ko?(\\.[[:alnum:]]*)$)|(/usr/lib/debug/)
+\ No newline at end of file
+diff --git a/fileattrs/elflib.attr b/fileattrs/elflib.attr
+new file mode 100644
+index 000000000..a8aafa6f1
+--- /dev/null
++++ b/fileattrs/elflib.attr
+@@ -0,0 +1,4 @@
++%__elflib_provides	%{_rpmconfigdir}/elfdeps --assume-exec --provides %{?__filter_GLIBC_PRIVATE:--filter-private}
++%__elflib_requires	%{_rpmconfigdir}/elfdeps --assume-exec --requires %{?__filter_GLIBC_PRIVATE:--filter-private}
++%__elflib_magic		^(setuid )?(setgid )?(sticky )?ELF (32|64)-bit.*shared object
++%__elflib_exclude_path	^/usr/lib/debug/

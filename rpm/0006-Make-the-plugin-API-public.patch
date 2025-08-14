@@ -205,4 +205,5 @@ index 27c587417..5d04a9746 100644
 -#include "rpmplugin.h"
 +#include <rpm/rpmplugin.h>
  
- static int lock_fd = -1; 
+ static int lock_fd = -1;
+ 

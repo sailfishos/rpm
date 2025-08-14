@@ -15,7 +15,7 @@ Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/check-files b/scripts/check-files
-index 12bacfb0ed6d9b0b790cb82566b176e582900687..3158fef497dcebcec69ae7cf688b4c0fe09f6278 100755
+index 12bacfb0e..3158fef49 100755
 --- a/scripts/check-files
 +++ b/scripts/check-files
 @@ -28,5 +28,5 @@ trap "rm -f \"${FILES_DISK}\"" 0 2 3 5 10 13 15

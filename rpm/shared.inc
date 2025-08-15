@@ -21,8 +21,9 @@ Patch23: 0023-Add-brp-remove-la-files-script.patch
 Patch24: 0024-Also-delete-symbol-links-that-could-point-to-la-file.patch
 Patch25: 0025-Exclude-usr-share-info-dir-from-check-files.patch
 
-# Remove this when updating rpm. JB#62519
+# Remove these when updating rpm. JB#62519
 Patch26: 0026-Use-external-debuginfo-tooling.patch
+Patch27: 0027-Use-NDB-as-the-default-database-backend.patch
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD 

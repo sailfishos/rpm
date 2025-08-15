@@ -4,6 +4,13 @@ Version: 4.19.1.1
 Release: 1
 %include rpm/shared.inc
 
+# When updating RPM so that the .so version changes,
+# provide librpm.so.N while building librpm.so.N+1
+# This can be disabled after the update has been completed.
+# When disabling this, remove db4 dependencies as well.
+%define rpm_compat 1
+%define old_so_version 9
+
 Requires: curl
 Requires: coreutils
 BuildRequires: meego-rpm-config
@@ -162,10 +169,17 @@ chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
 rm $RPM_BUILD_ROOT%{_docdir}/%{name}/*.md
 
+%if %{rpm_compat}
+find %{_libdir} -maxdepth 1 -name "librpm*.so.%{old_so_version}*" -print -exec cp -a {} $RPM_BUILD_ROOT%{_libdir}/ ';'
+%endif
+
 # Provide symlinks for legacy location bins and scripts. JB#62519
 ln -sf %{_bindir}/debugedit      $RPM_BUILD_ROOT%{_rpmconfigdir}/debugedit
 ln -sf %{_bindir}/find-debuginfo $RPM_BUILD_ROOT%{_rpmconfigdir}/find-debuginfo.sh
 ln -sf %{_bindir}/sepdebugcrcfix $RPM_BUILD_ROOT%{_rpmconfigdir}/sepdebugcrcfix
+ln -sf %{_rpmconfigdir}/meego/brp-fix-pyc-reproducibility $RPM_BUILD_ROOT%{_rpmconfigdir}/brp-fix-pyc-reproducibility
+ln -sf %{_rpmconfigdir}/meego/brp-python-bytecompile      $RPM_BUILD_ROOT%{_rpmconfigdir}/brp-python-bytecompile
+ln -sf %{_rpmconfigdir}/meego/brp-python-hardlink         $RPM_BUILD_ROOT%{_rpmconfigdir}/brp-python-hardlink
 
 %clean
 rm -rf $RPM_BUILD_ROOT

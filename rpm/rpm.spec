@@ -113,7 +113,8 @@ export CPPFLAGS CFLAGS LDFLAGS
     --enable-zstd \
     --with-lua \
     --with-cap \
-    --disable-inhibit-plugin
+    --disable-inhibit-plugin \
+    --enable-ndb
 
 %make_build
 
@@ -184,7 +185,11 @@ if [ -x /usr/bin/systemctl ]; then
 fi
 
 %posttrans
-if [ -f /var/lib/rpm/Packages ]; then
+# Rebuild database after RPM update.
+# Migrate from Berkeley DB to RPM NDB format.
+# Packages: bdb
+# Packages.db: ndb
+if [ -f /var/lib/rpm/Packages -o -f /var/lib/rpm/Packages.db ]; then
     touch /var/lib/rpm/.rebuilddb
 fi
 

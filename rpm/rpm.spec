@@ -30,6 +30,7 @@ BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libarchive-devel
 BuildRequires: libzstd-devel
+BuildRequires: sqlite-devel
 # Need rpm-sign for the work around to include old version of so files
 # can be removed after transition
 BuildRequires: rpm-sign
@@ -113,7 +114,8 @@ export CPPFLAGS CFLAGS LDFLAGS
     --enable-zstd \
     --with-lua \
     --with-cap \
-    --disable-inhibit-plugin
+    --disable-inhibit-plugin \
+    --with-sqlite
 
 %make_build
 
@@ -184,7 +186,9 @@ if [ -x /usr/bin/systemctl ]; then
 fi
 
 %posttrans
-if [ -f /var/lib/rpm/Packages ]; then
+# Rebuild database after RPM update.
+# Migrate from Berkeley DB to SQLite format.
+if [ -f /var/lib/rpm/Packages -o -f /var/lib/rpm/rpmdb.sqlite ]; then
     touch /var/lib/rpm/.rebuilddb
 fi
 

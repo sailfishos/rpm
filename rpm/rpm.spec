@@ -59,6 +59,15 @@ Requires: rpm = %{version}-%{release}
 %description libs
 This is an empty transitional package.
 
+%package sign
+Summary:   Package signing support
+License:   GPLv2+ and LGPLv2+ with exceptions
+Requires:  rpm  = %{version}-%{release}
+Requires:  %{_bindir}/gpg2
+
+%description sign
+This package contains support for digitally signing RPM packages.
+
 %package devel
 Summary:  Development files for manipulating RPM packages
 License: GPLv2+ and LGPLv2+ with exceptions
@@ -126,14 +135,6 @@ export CPPFLAGS CFLAGS LDFLAGS
 %install
 %cmake_install
 
-#sed "s/i386/arm/g" platform > platform.arm
-#sed "s/i386/mipsel/g" platform > platform.mipsel
-
-#DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.arm arm %%{_vendor} linux -gnueabi
-#DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.mipsel mipsel %%{_vendor} linux -gnu
-
-find %{buildroot} -regex ".*\\.la$" | xargs rm -f --
-
 # Database backend is auto-detected during build
 if ! grep -E '^%%_db_backend[[:space:]]+ndb$' ${RPM_BUILD_ROOT}%{_rpmconfigdir}/macros; then
     echo "Default database is not ndb"
@@ -150,20 +151,15 @@ mkdir -p $RPM_BUILD_ROOT/bin
 mkdir -p $RPM_BUILD_ROOT%{_rpmconfigdir}/rpm/fileattrs
 
 install -m 644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_rpmconfigdir}/fileattrs/libsymlink.attr
-rm -f ${RPM_BUILD_ROOT}%{_rpmconfigdir}/rpm/fileattrs/ksyms.attr
 mkdir -p $RPM_BUILD_ROOT/var/lib/rpm
 ln -s %{_bindir}/rpm $RPM_BUILD_ROOT/bin/
 
 %find_lang %{name}
 
-find $RPM_BUILD_ROOT -name "*.la"|xargs rm -f
-
-# Remove php macro as we don't use php
-rm -f $RPM_BUILD_ROOT/%{_rpmconfigdir}/macros.php
+find $RPM_BUILD_ROOT -name "*.la" -delete
 
 # Move doc files to their directory
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
-install -m0644 -t $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/ CREDITS README
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
@@ -180,9 +176,6 @@ ln -sf %{_bindir}/sepdebugcrcfix $RPM_BUILD_ROOT%{_rpmconfigdir}/sepdebugcrcfix
 ln -sf %{_rpmconfigdir}/meego/brp-fix-pyc-reproducibility $RPM_BUILD_ROOT%{_rpmconfigdir}/brp-fix-pyc-reproducibility
 ln -sf %{_rpmconfigdir}/meego/brp-python-bytecompile      $RPM_BUILD_ROOT%{_rpmconfigdir}/brp-python-bytecompile
 ln -sf %{_rpmconfigdir}/meego/brp-python-hardlink         $RPM_BUILD_ROOT%{_rpmconfigdir}/brp-python-hardlink
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
@@ -205,17 +198,16 @@ if [ -x /usr/bin/systemctl ]; then
     systemctl --no-reload preset rpmdb-rebuild ||:
 fi
 
+%post sign -p /sbin/ldconfig
+
+%postun sign -p /sbin/ldconfig
+
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %license COPYING
-
 /usr/lib/systemd/system/rpmdb-rebuild.service
-
 %dir %{_sysconfdir}/rpm
-
 %attr(0755, root, root) %dir /var/lib/rpm
 %attr(0755, root, root) %dir %{_rpmconfigdir}
-
 /bin/rpm
 %{_bindir}/rpm
 %{_bindir}/rpmkeys
@@ -227,7 +219,6 @@ fi
 %{_bindir}/rpm2archive
 %{_libdir}/rpm-plugins/syslog.so
 %{_libdir}/rpm-plugins/prioreset.so
-
 %{_rpmconfigdir}/macros
 %{_rpmconfigdir}/macros.d
 %{_rpmconfigdir}/rpmpopt*
@@ -241,9 +232,7 @@ fi
 %{_rpmconfigdir}/sysusers.sh
 %{_rpmconfigdir}/tgpg
 %{_rpmconfigdir}/platform
-
 %dir %{_rpmconfigdir}/fileattrs
-
 %{_libdir}/librpmio.so.*
 %{_libdir}/librpm.so.*
 
@@ -256,9 +245,7 @@ fi
 %doc %{_defaultdocdir}/rpm/COPYING
 %doc %{_defaultdocdir}/rpm/INSTALL
 %doc %{_defaultdocdir}/rpm/README
-
 %{_libdir}/librpmbuild.so.*
-
 %{_rpmconfigdir}/brp-*
 %{_rpmconfigdir}/check-*
 
@@ -276,29 +263,18 @@ fi
 %{_rpmconfigdir}/fileattrs/*
 
 %files devel
-%defattr(-,root,root)
 %{_includedir}/rpm
-%{_libdir}/librp*[a-z].so
+%{_libdir}/librpm.so
+%{_libdir}/librpmbuild.so
+%{_libdir}/librpmio.so
+%{_libdir}/librpmsign.so
 %{_bindir}/rpmgraph
 %{_libdir}/pkgconfig/rpm.pc
 %{_libdir}/cmake/rpm/
 
 %files libs
-%defattr(-,root,root)
 %doc %{_docdir}/%{name}-%{version}/README.rpm-libs
-
-%package sign
-Summary:   Package signing support
-License:   GPLv2+ and LGPLv2+ with exceptions
-Requires:  rpm  = %{version}-%{release}
-Requires:  %{_bindir}/gpg2
-
-%description sign
-This package contains support for digitally signing RPM packages.
 
 %files sign
 %{_bindir}/rpmsign
 %{_libdir}/librpmsign.so.*
-
-%post sign -p /sbin/ldconfig
-%postun sign -p /sbin/ldconfig

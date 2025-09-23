@@ -174,26 +174,22 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/ldconfig
 # When installing for the first time, make sure the database exists.
+# bdb: Packages
+# ndb: Packages.db
 if [ "$1" -eq "1" ] && [ ! -f /var/lib/rpm/Packages ] && [ ! -f /var/lib/rpm/Packages.db ]; then
     rpmdb --initdb
 fi
 
 %postun -p /sbin/ldconfig
 
-# Handle rpmdb rebuild service on erasure of old to avoid ordering issues
-# https://pagure.io/fesco/issue/2382
-%triggerun -- rpm < 4.16.1.3+git2
+%posttrans
+# Trigger database migration from obsolete bdb to nbd, if bdb is detected.
+if [ -f /var/lib/rpm/Packages ]; then
+    touch /var/lib/rpm/.rebuilddb
+fi
+# Make sure the service is enabled.
 if [ -x /usr/bin/systemctl ]; then
     systemctl --no-reload preset rpmdb-rebuild ||:
-fi
-
-%posttrans
-# Rebuild database after RPM update.
-# This also migrates the database from Berkeley DB to RPM NDB.
-# bdb: Packages
-# ndb: Packages.db
-if [ -f /var/lib/rpm/Packages ] || [ -f /var/lib/rpm/Packages.db ]; then
-    touch /var/lib/rpm/.rebuilddb
 fi
 
 %files -f %{name}.lang

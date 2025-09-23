@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Matti Viljanen <matti.viljanen@jolla.com>
+Date: Fri, 15 Aug 2025 11:47:12 +0300
+Subject: [PATCH] Use NDB as the default database backend
+
+Up to and including rpm 4.16 the default backend was dbd.
+The default changed to sqlite in rpm 4.17, but we are using ndb for now.
+We want to avoid adding more packages to prjconf `Preinstall`,
+which would add to build time and possibly affect build loop as well.
+---
+ macros.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/macros.in b/macros.in
+index 5c41d6f6e..cac536d33 100644
+--- a/macros.in
++++ b/macros.in
+@@ -624,7 +624,7 @@ package or when debugging this package.\
+ # sqlite Sqlite database
+ # dummy dummy backend (no actual functionality)
+ #
+-%_db_backend	      bdb
++%_db_backend	      ndb
+ 
+ #
+ #	Macros used to configure Berkley db parameters.

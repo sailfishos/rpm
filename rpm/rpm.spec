@@ -113,7 +113,8 @@ export CPPFLAGS CFLAGS LDFLAGS
     --enable-zstd \
     --with-lua \
     --with-cap \
-    --disable-inhibit-plugin
+    --disable-inhibit-plugin \
+    --enable-ndb
 
 %make_build
 
@@ -128,7 +129,7 @@ rm -rf $RPM_BUILD_ROOT
 #DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.arm arm %%{_vendor} linux -gnueabi
 #DESTDIR=$RPM_BUILD_ROOT ./installplatform rpmrc macros platform.mipsel mipsel %%{_vendor} linux -gnu
 
-find %{buildroot} -regex ".*\\.la$" | xargs rm -f -- 
+find %{buildroot} -regex ".*\\.la$" | xargs rm -f --
 
 # We cannot use _unitdir macro as we don't want to depend on systemd
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
@@ -172,20 +173,23 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
-test -f var/lib/rpm/Packages || rpmdb --initdb
+# When installing for the first time, make sure the database exists.
+# bdb: Packages
+# ndb: Packages.db
+if [ "$1" -eq "1" ] && [ ! -f /var/lib/rpm/Packages ] && [ ! -f /var/lib/rpm/Packages.db ]; then
+    rpmdb --initdb
+fi
 
 %postun -p /sbin/ldconfig
 
-# Handle rpmdb rebuild service on erasure of old to avoid ordering issues
-# https://pagure.io/fesco/issue/2382
-%triggerun -- rpm < 4.16.1.3+git2
-if [ -x /usr/bin/systemctl ]; then
-    systemctl --no-reload preset rpmdb-rebuild ||:
-fi
-
 %posttrans
+# Trigger database migration from obsolete bdb to nbd, if bdb is detected.
 if [ -f /var/lib/rpm/Packages ]; then
     touch /var/lib/rpm/.rebuilddb
+fi
+# Make sure the service is enabled.
+if [ -x /usr/bin/systemctl ]; then
+    systemctl --no-reload preset rpmdb-rebuild ||:
 fi
 
 %files -f %{name}.lang

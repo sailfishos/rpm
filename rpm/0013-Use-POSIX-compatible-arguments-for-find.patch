@@ -12,19 +12,6 @@ Signed-off-by: Marko Saukko <marko.saukko@jolla.com>
  scripts/brp-strip-comment-note | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/brp-python-hardlink b/scripts/brp-python-hardlink
-index 5fd1b43bb..b24432c92 100755
---- a/scripts/brp-python-hardlink
-+++ b/scripts/brp-python-hardlink
-@@ -15,7 +15,7 @@ hardlink_if_same() {
- 
- # Hardlink identical *.pyc, *.pyo, and *.opt-[12].pyc.
- # Originally from PLD's rpm-build-macros
--find "$RPM_BUILD_ROOT" -type f -name "*.pyc" -not -name "*.opt-[12].pyc" | while read pyc ; do
-+find "$RPM_BUILD_ROOT" -type f -name "*.pyc" '!' -name "*.opt-[12].pyc" | while read pyc ; do
- 	hardlink_if_same "$pyc" "${pyc%c}o"
- 	o1pyc="${pyc%pyc}opt-1.pyc"
- 	hardlink_if_same "$pyc" "$o1pyc"
 diff --git a/scripts/brp-strip b/scripts/brp-strip
 index c3484fe3c..c5d3f2f3e 100755
 --- a/scripts/brp-strip

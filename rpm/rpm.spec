@@ -127,6 +127,12 @@ export CPPFLAGS CFLAGS LDFLAGS
 
 find %{buildroot} -regex ".*\\.la$" | xargs rm -f --
 
+# Database backend is auto-detected during build
+if ! grep -E '^%%_db_backend[[:space:]]+ndb$' ${RPM_BUILD_ROOT}%{_rpmconfigdir}/macros; then
+    echo "Default database is not ndb"
+    exit 1
+fi
+
 # We cannot use _unitdir macro as we don't want to depend on systemd
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/systemd/system

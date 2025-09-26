@@ -1,6 +1,6 @@
 Summary: The RPM package management system python3 support
 Name: rpm-python
-Version: 4.16.1.3
+Version: 4.19.1.1
 Release: 1
 # Normally we could just read rpm.spec
 # for our sources but tar_git doesn't include rpm.spec
@@ -34,7 +34,6 @@ BuildRequires: lua-devel >= 5.1
 BuildRequires: libcap-devel
 BuildRequires: xz-devel >= 4.999.8
 BuildRequires: libzstd-devel
-BuildRequires: sqlite-devel
 
 %description
 The RPM Package Manager (RPM) is a powerful command line driven

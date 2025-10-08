@@ -18,6 +18,7 @@ Patch9:  0009-Also-delete-symbol-links-that-could-point-to-la-file.patch
 Patch10: 0010-Exclude-usr-share-info-dir-from-check-files.patch
 Patch11: 0011-Fix-macros-with-older-rpm.patch
 Patch12: 0012-Fix-syntax-error-if-there-are-no-matching-files.patch
+Patch13: 0013-Dilute-user-and-group-requires-into-recommends.patch
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD

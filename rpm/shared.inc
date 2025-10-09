@@ -20,6 +20,7 @@ Patch11: 0011-Fix-macros-with-older-rpm.patch
 Patch12: 0012-Fix-syntax-error-if-there-are-no-matching-files.patch
 Patch13: 0013-Dilute-user-and-group-requires-into-recommends.patch
 Patch14: 0014-Increase-build-reproducibility.patch
+Patch15: 0015-Ensure-rmbuild-doesn-t-fail-due-to-permissions-in-th.patch
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD

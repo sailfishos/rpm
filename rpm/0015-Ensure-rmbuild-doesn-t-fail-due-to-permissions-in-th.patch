@@ -1,0 +1,98 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Panu Matilainen <pmatilai@redhat.com>
+Date: Thu, 28 Mar 2024 11:43:39 +0200
+Subject: [PATCH] Ensure %rmbuild doesn't fail due to permissions in the built
+ content
+
+Packages may contain files without write permissions, read-only sources
+and whatnot. Run %_fixperms on the whole builddir before trying to
+remove it to ensure we don't fail doing our household duties, both
+on post-cleanup but also before trying to remove an old run, as
+eg 'rpmbuild -bi' will not run cleanup.
+
+It's worth noting that prior to b5f6c64554d954c43d5dd5b32246a2f315be6fcb
+the build could similarly fail while running it's default %clean.
+If we hadn't removeed the default %clean, we'd have to do this
+permission fixup first redundantly for the build root and then for the
+rest of the %builddir.
+
+Also worth noting is that the added test doesn't actually reproduce the
+issue in the test-suite because it runs as root and root is not bothered
+by such petty issues as missing read/write permissions to remove. But
+at least we have a reproducer for the case once #3005 is done.
+
+(partial cherry pick from c751b54b83c8f7c4656b93fdceb16394992acede)
+---
+ build/build.c                 |  4 ++++
+ tests/data/SPECS/noperms.spec | 22 ++++++++++++++++++++++
+ tests/rpmbuild.at             | 16 ++++++++++++++++
+ 3 files changed, 42 insertions(+)
+ create mode 100644 tests/data/SPECS/noperms.spec
+
+diff --git a/build/build.c b/build/build.c
+index f2cf98c8b..7b492c24e 100644
+--- a/build/build.c
++++ b/build/build.c
+@@ -194,6 +194,10 @@ rpmRC doScript(rpmSpec spec, rpmBuildFlags what, const char *name,
+ 	fprintf(fp, "cd '%s'\n", buildSubdir);
+ 
+     if (what == RPMBUILD_RMBUILD) {
++	char *fix = rpmExpand("%{_fixperms}", NULL);
++	fprintf(fp, "test -d '%s' && %s '%s'\n",
++			buildSubdir, fix, buildSubdir);
++    free(fix);
+ 	if (rpmMacroIsDefined(spec->macros, "specpartsdir")) {
+ 	    char * buf = rpmExpand("%{specpartsdir}", NULL);
+ 	    fprintf(fp, "rm -rf '%s'\n", buf);
+diff --git a/tests/data/SPECS/noperms.spec b/tests/data/SPECS/noperms.spec
+new file mode 100644
+index 000000000..fe10a462c
+--- /dev/null
++++ b/tests/data/SPECS/noperms.spec
+@@ -0,0 +1,22 @@
++Name: noperms
++Version: 1.0
++Release: 1
++License: Public Domain
++Summary: Test read-only files in build
++
++%description
++%{summary}
++
++%prep
++%setup -c -T
++
++%build
++mkdir bad
++touch bad/foo
++chmod a-w bad
++
++%install
++cp -avp . ${RPM_BUILD_ROOT}
++
++%files
++/bad
+diff --git a/tests/rpmbuild.at b/tests/rpmbuild.at
+index ad7c40600..60a88a323 100644
+--- a/tests/rpmbuild.at
++++ b/tests/rpmbuild.at
+@@ -2517,3 +2517,19 @@ rpmspec --define "nosuchmacro /bbb" --parse /data/SPECS/badftrigger.spec
+ [ignore],
+ [])
+ RPMTEST_CLEANUP
++
++# XXX this always succeeds when rpmbuild is run as root so the test is
++# kinda meaningless until #3005 is done, but works as a manual reproducer.
++AT_SETUP([rpmbuild non-removable file in builddir])
++AT_KEYWORDS([build])
++RPMDB_INIT
++
++# -bi doesn't run cleanup, test that we manage that situation too
++RPMTEST_CHECK([
++runroot rpmbuild --quiet -bi /data/SPECS/noperms.spec
++runroot rpmbuild --quiet -bb /data/SPECS/noperms.spec
++],
++[0],
++[],
++[])
++RPMTEST_CLEANUP

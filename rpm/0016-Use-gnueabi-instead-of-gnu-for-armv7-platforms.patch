@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Matti Viljanen <matti.viljanen@jolla.com>
+Date: Sun, 12 Oct 2025 15:52:05 +0300
+Subject: [PATCH] Use gnueabi instead of gnu for armv7 platforms
+
+Commit 439e3f82006a4de3cb3364853c2fe19c910d9920 wasn't implemented in CMake,
+but it also made all platforms gnueabi if the build os was gnueabi.
+This patch sets gnueabi for armv7hl, armv7hnl and armv7l platforms only,
+and does it no matter what the build os is. This should be more correct.
+---
+ installplatform | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/installplatform b/installplatform
+index ac9b61643..a71019102 100755
+--- a/installplatform
++++ b/installplatform
+@@ -9,9 +9,9 @@ PLATFORM="${2:-platform}"
+ MACROS="${3:-macros}"
+ VENDOR="${4}"
+ OS="${5}"
+-RPMRC_GNU="${6}"
+ 
+ for ARCH in noarch `grep ^arch_canon $RPMRC | cut -d: -f2` ${RPM_CUSTOM_ARCH:+custom}; do
++  RPMRC_GNU="${6}"
+   RPMRC_OPTFLAGS="`sed -n 's/^optflags: '$ARCH' //p' $RPMRC`"
+   RPMRC_OPTFLAGS="`echo $RPMRC_OPTFLAGS | sed -e 's, ,\ ,g'`"
+   case $RPMRC_OPTFLAGS in
+@@ -103,11 +103,12 @@ for ARCH in noarch `grep ^arch_canon $RPMRC | cut -d: -f2` ${RPM_CUSTOM_ARCH:+cu
+ 	CANONARCH=${ARCH}
+ 	CANONCOLOR=0
+ 	;;
+-    armv7h*)
++    armv7*)
+ 	ISANAME=armv7hl
+ 	ISABITS=32
+ 	CANONARCH=arm
+ 	CANONCOLOR=0
++	RPMRC_GNU="-gnueabi"
+ 	;;
+     arm*)
+ 	ISANAME=`echo ${ARCH} | sed "s/^\([^-]*\)-.*/\1/"`

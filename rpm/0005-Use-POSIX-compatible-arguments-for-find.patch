@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tomi=20Lepp=C3=A4nen?= <tomi.leppanen@jolla.com>
+Date: Fri, 14 Dec 2018 12:08:19 +0200
+Subject: [PATCH] Use POSIX compatible arguments for find
+
+Arguments -or and -not are GNU extensions.
+
+Signed-off-by: Marko Saukko <marko.saukko@jolla.com>
+---
+ scripts/brp-elfperms           | 2 +-
+ scripts/brp-strip-comment-note | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/brp-elfperms b/scripts/brp-elfperms
+index 0749f36a5..9c01cbff9 100755
+--- a/scripts/brp-elfperms
++++ b/scripts/brp-elfperms
+@@ -9,5 +9,5 @@ ELFCLASSIFY=/usr/bin/eu-elfclassify
+ [ -x ${ELFCLASSIFY} ] || exit 0
+ 
+ # Strip executable bits from ELF DSO's which are not actually executable
+-find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -or -perm -0010 -or -perm -0001 \) | ${ELFCLASSIFY} --shared --print0 --stdin | xargs -0 -r chmod a-x
++find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -o -perm -0010 -o -perm -0001 \) | ${ELFCLASSIFY} --shared --print0 --stdin | xargs -0 -r chmod a-x
+ 
+diff --git a/scripts/brp-strip-comment-note b/scripts/brp-strip-comment-note
+index baf8537f3..5bcf47a70 100755
+--- a/scripts/brp-strip-comment-note
++++ b/scripts/brp-strip-comment-note
+@@ -15,7 +15,7 @@ esac
+ 
+ # Strip .comment and .note sections (the latter only if it is not allocated)
+ # for already stripped elf files in the build root
+-for f in `find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -or -perm -0010 -or -perm -0001 \) -print0 | xargs -0 -r -P$NCPUS -n32 sh -c "file \"\\$@\" | grep -v \"^${RPM_BUILD_ROOT}/\?usr/lib/debug\" | sed -n -e 's/^\(.*\):[ 	]*ELF.*, stripped.*/\1/p'" ARG0`; do
++for f in `find "$RPM_BUILD_ROOT" -type f \( -perm -0100 -o -perm -0010 -o -perm -0001 \) -print0 | xargs -0 -r -P$NCPUS -n32 sh -c "file \"\\$@\" | grep -v \"^${RPM_BUILD_ROOT}/\?usr/lib/debug\" | sed -n -e 's/^\(.*\):[ 	]*ELF.*, stripped.*/\1/p'" ARG0`; do
+ 	note="-R .note"
+ 	if $OBJDUMP -h $f | grep '^[ 	]*[0-9]*[ 	]*.note[ 	]' -A 1 | \
+ 		grep ALLOC >/dev/null; then

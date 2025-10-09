@@ -8,6 +8,7 @@ Patch5:  0005-OpenSUSE-elfdeps.patch
 Patch8:  0008-rpmbuild-Add-nobuildstage-to-not-execute-build-stage.patch
 Patch10: 0010-Omit-debug-info-from-main-package-and-enable-debugso.patch
 Patch13: 0013-Use-POSIX-compatible-arguments-for-find.patch
+Patch15: 0015-Ensure-rmbuild-doesn-t-fail-due-to-permissions-in-th.patch
 Patch17: 0017-rpmsign-Close-file-before-replacing.patch
 Patch18: 0018-include-plugin-header.patch
 # Fix for error: liblzma: Memory allocation failed

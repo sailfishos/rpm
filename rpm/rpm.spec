@@ -76,6 +76,7 @@ will manipulate RPM packages and databases.
 %package build
 Summary: Scripts and executable programs used to build packages
 Requires: rpm = %{version}-%{release}
+Requires: rpm-build-libs = %{version}-%{release}
 Requires: elfutils >= 0.128 binutils
 Requires: findutils sed grep gawk diffutils file patch >= 2.5
 Requires: tar unzip gzip bzip2 cpio lzma xz
@@ -86,6 +87,14 @@ Requires: debugedit
 %description build
 The rpm-build package contains the scripts and executable programs
 that are used to build packages using the RPM Package Manager.
+
+%package build-libs
+Summary: Libraries used to build packages
+Requires: rpm = %{version}-%{release}
+
+%description build-libs
+The rpm-build-libs package contains the library needed by rpm-build to
+build packages using the RPM Package Manager.
 
 %package doc
 Summary:  Documentation for %{name}
@@ -192,6 +201,9 @@ if [ -x /usr/bin/systemctl ]; then
     systemctl --no-reload preset rpmdb-rebuild ||:
 fi
 
+%post build-libs -p /sbin/ldconfig
+%postun build-libs -p /sbin/ldconfig
+
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %license COPYING
@@ -237,8 +249,6 @@ fi
 %{_bindir}/gendiff
 %{_bindir}/rpmspec
 
-%{_libdir}/librpmbuild.so.*
-
 %{rpmhome}/brp-*
 %{rpmhome}/check-*
 
@@ -255,6 +265,9 @@ fi
 %{rpmhome}/*.req
 %{rpmhome}/mkinstalldirs
 %{rpmhome}/fileattrs/*
+
+%files build-libs
+%{_libdir}/librpmbuild.so.*
 
 %files devel
 %defattr(-,root,root)

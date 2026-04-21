@@ -30,7 +30,7 @@ at least we have a reproducer for the case once #3005 is done.
  create mode 100644 tests/data/SPECS/noperms.spec
 
 diff --git a/build/build.c b/build/build.c
-index f2cf98c8b..7b492c24e 100644
+index f2cf98c8b..fc6264b93 100644
 --- a/build/build.c
 +++ b/build/build.c
 @@ -194,6 +194,10 @@ rpmRC doScript(rpmSpec spec, rpmBuildFlags what, const char *name,

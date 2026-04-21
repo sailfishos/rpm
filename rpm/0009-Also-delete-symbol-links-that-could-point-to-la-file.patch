@@ -1,4 +1,4 @@
-From e5fa88f95e72fe9e59c0750fc69880818194b9af Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20Bidar?= <bjorn.bidar@jolla.com>
 Date: Mon, 8 Jan 2024 04:21:59 +0200
 Subject: [PATCH] Also delete symbol links that could point to la-files
@@ -12,19 +12,22 @@ as it will be invalid.
 
 Signed-off-by: Björn Bidar <bjorn.bidar@jolla.com>
 ---
- scripts/brp-remove-la-files | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/brp-remove-la-files | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/scripts/brp-remove-la-files b/scripts/brp-remove-la-files
-index f184139c7..b1dc39336 100755
+index 58c513bf8..ec2832df5 100755
 --- a/scripts/brp-remove-la-files
 +++ b/scripts/brp-remove-la-files
-@@ -5,4 +5,4 @@ if [ -z "$RPM_BUILD_ROOT" ] || [ "$RPM_BUILD_ROOT" = "/" ]; then
-   exit 0
- fi
- 
--find "$RPM_BUILD_ROOT" -name "*.la" -type f -delete
-+find -H "$RPM_BUILD_ROOT" -name "*.la" -a \( -type f -o -type l \) -delete
--- 
-2.43.0
-
+@@ -8,3 +8,10 @@ fi
+ find "$RPM_BUILD_ROOT" -type f -name '*.la' 2>/dev/null -print0 |
+   xargs -0 grep --fixed-strings '.la - a libtool library file' --files-with-matches --null |
+   xargs -0 rm --force
++
++find "$RPM_BUILD_ROOT" -type l -name '*.la' 2>/dev/null -print0 |
++  xargs -0 file |
++  grep "broken symbolic link" |
++  awk -F'[: ]' '{print $1}' |
++  xargs rm --force
++  
+\ No newline at end of file

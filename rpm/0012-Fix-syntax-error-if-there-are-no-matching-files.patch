@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Matti Viljanen <matti.viljanen@jolla.com>
+Date: Fri, 15 Aug 2025 09:49:39 +0300
+Subject: [PATCH] Fix syntax error if there are no matching files
+
+---
+ scripts/brp-remove-la-files | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/brp-remove-la-files b/scripts/brp-remove-la-files
+index ec2832df5..17477ff24 100755
+--- a/scripts/brp-remove-la-files
++++ b/scripts/brp-remove-la-files
+@@ -6,12 +6,11 @@ if [ -z "$RPM_BUILD_ROOT" ] || [ "$RPM_BUILD_ROOT" = "/" ]; then
+ fi
+ 
+ find "$RPM_BUILD_ROOT" -type f -name '*.la' 2>/dev/null -print0 |
+-  xargs -0 grep --fixed-strings '.la - a libtool library file' --files-with-matches --null |
+-  xargs -0 rm --force
++  xargs -0 -r grep --fixed-strings '.la - a libtool library file' --files-with-matches --null |
++  xargs -0 -r rm --force
+ 
+ find "$RPM_BUILD_ROOT" -type l -name '*.la' 2>/dev/null -print0 |
+-  xargs -0 file |
++  xargs -0 -r file |
+   grep "broken symbolic link" |
+   awk -F'[: ]' '{print $1}' |
+-  xargs rm --force
+-  
+\ No newline at end of file
++  xargs -r rm --force

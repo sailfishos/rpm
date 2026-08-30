@@ -172,9 +172,9 @@ mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
 echo "This is an empty package" > $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 chmod 0644 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/README.rpm-libs
 
-%if %{rpm_compat}
-find %{_libdir} -maxdepth 1 -name "librpm*.so.%{old_so_version}*" -print -exec cp -a {} $RPM_BUILD_ROOT%{_libdir}/ ';'
-%endif
+# %%if %%{rpm_compat}
+# find %%{_libdir} -maxdepth 1 -name "librpm*.so.%%{old_so_version}*" -print -exec cp -a {} $RPM_BUILD_ROOT%%{_libdir}/ ';'
+# %%endif
 
 # Provide symlinks for legacy location bins and scripts. JB#62519
 ln -sf %{_bindir}/debugedit      $RPM_BUILD_ROOT%{_rpmconfigdir}/debugedit

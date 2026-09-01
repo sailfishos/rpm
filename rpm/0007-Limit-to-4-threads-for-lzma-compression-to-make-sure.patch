@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Niels Breet <niels.breet@jolla.com>
+Date: Tue, 15 Jun 2021 17:52:08 +0300
+Subject: [PATCH] Limit to 4 threads for lzma compression to make sure we do
+ not run out of memory.
+
+---
+ rpmio/rpmio.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/rpmio/rpmio.c b/rpmio/rpmio.c
+index 6069274a7..951c65a2f 100644
+--- a/rpmio/rpmio.c
++++ b/rpmio/rpmio.c
+@@ -774,6 +774,10 @@ static LZFILE *lzopen_internal(const char *mode, int fd, int xz)
+ 	    mode = end-1;
+ 	}
+     }
++
++    if (threads > 4)
++        threads = 4;
++
+     fp = fdopen(fd, encoding ? "w" : "r");
+     if (!fp)
+ 	return NULL;

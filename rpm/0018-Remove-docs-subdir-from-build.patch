@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Matti Viljanen <matti.viljanen@jolla.com>
+Date: Wed, 15 Apr 2026 22:00:07 +0300
+Subject: [PATCH] Remove docs subdir from build
+
+This prevents documentation getting built even if Doxygen is installed.
+---
+ CMakeLists.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bfaedf8a7..eaa58ee03 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -405,7 +405,6 @@ include_directories(${CMAKE_SOURCE_DIR}/misc)
+ # public headers
+ include_directories(${CMAKE_SOURCE_DIR}/include)
+ 
+-add_subdirectory(docs)
+ add_subdirectory(include/rpm)
+ add_subdirectory(misc)
+ add_subdirectory(rpmio)

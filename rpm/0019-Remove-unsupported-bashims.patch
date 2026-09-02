@@ -1,0 +1,70 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Matti Viljanen <matti.viljanen@jolla.com>
+Date: Wed, 2 Sep 2026 11:51:59 +0300
+Subject: [PATCH] Remove unsupported bashisms
+
+Busybox ash doesn't support arrays (nor mapfile command).
+---
+ scripts/sysusers.sh | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
+
+diff --git a/scripts/sysusers.sh b/scripts/sysusers.sh
+index 0e806cf7f4..ba67a5862d 100755
+--- a/scripts/sysusers.sh
++++ b/scripts/sysusers.sh
+@@ -108,35 +108,42 @@ usermod() {
+ 	local group="$2"
+ 
+ 	if hasgroup "${group}" ; then
+-		usermod -R "$ROOT" -a -G "${group}" "$user" || :
++		command usermod -R "$ROOT" -a -G "${group}" "$user" || :
+ 	fi
+ }
+ 
+ parse() {
+-	local line arr
+-
++	local line f0 f1 f2 f3 f4 f5 i value
+ 	while read -r line || [ -n "$line" ] ; do
+ 		{ [ "${line:0:1}" = '#' ] || [ "${line:0:1}" = ';' ]; } && continue
+ 		line="${line## *}"
+ 		[ -z "$line" ] && continue
+-		mapfile -t arr < <(xargs -n1 <<<"$line")
+ 
+-		case "${arr[0]}" in
++		f0= f1= f2= f3= f4= f5=
++		i=0
++		while IFS= read -r value; do
++			eval "f$i=\$value"
++			i=$((i+1))
++		done <<EOF
++$(printf '%s\n' "$line" | xargs -n1)
++EOF
++
++		case "$f0" in
+ 			('u')
+-				if [[ "${arr[2]}" == *":"* ]]; then
+-					user "${arr[1]}" "${arr[2]%:*}" "${arr[3]}" "${arr[2]#*:}" "${arr[4]}" "${arr[5]}"
++				if [[ "${f2}" == *":"* ]]; then
++					user "${f1}" "${f2%:*}" "${f3}" "${f2#*:}" "${f4}" "${f5}"
+ 				else
+-					group "${arr[1]}" "${arr[2]}"
+-					user "${arr[1]}" "${arr[2]}" "${arr[3]}" "${arr[1]}" "${arr[4]}" "${arr[5]}"
++					group "${f1}" "${f2}"
++					user "${f1}" "${f2}" "${f3}" "${f1}" "${f4}" "${f5}"
+ 				fi
+ 				;;
+ 			('g')
+-				group "${arr[1]}" "${arr[2]}"
++				group "${f1}" "${f2}"
+ 				;;
+ 			('m')
+-				group "${arr[2]}" "-"
+-				user "${arr[1]}" "-" "" "${arr[1]}" "" ""
+-				usermod "${arr[1]}" "${arr[2]}"
++				group "${f2}" "-"
++				user "${f1}" "-" "" "${f1}" "" ""
++				usermod "${f1}" "${f2}"
+ 				;;
+ 		esac
+ 	done

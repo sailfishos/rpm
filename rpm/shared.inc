@@ -24,6 +24,7 @@ Patch15: 0015-Ensure-rmbuild-doesn-t-fail-due-to-permissions-in-th.patch
 Patch16: 0016-Use-gnueabi-instead-of-gnu-for-armv7-platforms.patch
 Patch17: 0017-Fix-host-triplet-generation.patch
 Patch18: 0018-Remove-docs-subdir-from-build.patch
+Patch19: 0019-Remove-unsupported-bashims.patch
 
 # Partially GPL/LGPL dual-licensed and some bits with BSD
 # SourceLicense: (GPLv2+ and LGPLv2+ with exceptions) and BSD
